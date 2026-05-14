@@ -392,23 +392,17 @@
       "></p>
     `;
 
-    /* 드라이브 폴더 URL (order.html에서 결제 전에 업로드 완료된 것) */
-    const folderUrl = sessionStorage.getItem('capsule_folder_url') || '';
-
     /* 구글 시트 저장 (fire-and-forget, no-cors로 안정 전송) */
     const statusEl = document.getElementById('sheetsStatus');
     if (APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
       statusEl.textContent = '주문 정보 저장 중…';
-      saveToSheets(order, paymentKey, orderId, amount, folderUrl).then(() => {
-        statusEl.innerHTML = folderUrl
-          ? `✓ 저장 완료 &nbsp;·&nbsp; <a href="${folderUrl}" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 폴더 보기 →</a>`
-          : '✓ 주문 정보가 구글 시트에 저장되었습니다.';
+      saveToSheets(order, paymentKey, orderId, amount, '').then(() => {
+        statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
       });
     }
 
     /* 사용 완료된 주문 데이터 정리 */
     sessionStorage.removeItem('capsule_order');
-    sessionStorage.removeItem('capsule_folder_url');
   </script>
 
 </body>

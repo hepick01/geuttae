@@ -365,29 +365,22 @@
       });
     }
 
-    /* ── 사진 → 구글 드라이브 업로드 (폴더 URL 반환) ── */
+    /* ── 사진 → 구글 드라이브 업로드 (no-cors: fire-and-forget) ── */
     async function uploadPhotos(photos, orderId, recipient) {
-      const payload = JSON.stringify({
-        action:    'uploadPhotos',
-        orderId:   String(orderId   || ''),
-        recipient: String(recipient || ''),
-        photos:    photos,
-      });
-      console.log('[Drive Upload] payload size:', payload.length, 'orderId:', orderId, 'recipient:', recipient);
       try {
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method:   'POST',
-          redirect: 'follow',
-          headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
-          body:     payload,
+        await fetch(APPS_SCRIPT_URL, {
+          method:  'POST',
+          mode:    'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action:    'uploadPhotos',
+            orderId:   String(orderId   || ''),
+            recipient: String(recipient || ''),
+            photos:    photos,
+          }),
         });
-        const text = await res.text();
-        console.log('[Drive Upload] response:', text.slice(0, 300));
-        const data = JSON.parse(text);
-        return data.folderUrl || '';
       } catch (err) {
-        console.error('[Drive Upload] 실패:', err);
-        return '';
+        console.error('[Drive Upload]', err);
       }
     }
 
@@ -429,20 +422,15 @@
 
       /* 사진 압축 → 결제 전에 바로 구글 드라이브에 업로드
          (sessionStorage 용량 문제 없이 폴더 URL만 저장) */
-      let driveFolderUrl = '';
       if (uploadedFiles.length > 0) {
         btn.textContent = `사진 압축 중…`;
         const compressed = (await Promise.all(uploadedFiles.map(compressImage))).filter(Boolean);
         if (compressed.length > 0) {
-          btn.textContent = `사진 ${compressed.length}장 드라이브에 업로드 중…`;
-          driveFolderUrl = await uploadPhotos(compressed, orderId, recipient);
-          console.log('[Order] 드라이브 폴더 URL:', driveFolderUrl);
-          if (!driveFolderUrl) {
-            console.warn('[Order] 드라이브 업로드 실패 — 주문은 계속 진행됩니다.');
-          }
+          btn.textContent = `사진 ${compressed.length}장 업로드 중…`;
+          await uploadPhotos(compressed, orderId, recipient);
         }
       }
-      sessionStorage.setItem('capsule_folder_url', driveFolderUrl);
+      sessionStorage.removeItem('capsule_folder_url');
 
       /* 주문 정보 sessionStorage에 저장
          (성공 페이지에서 주문 내역 표시에 활용) */
