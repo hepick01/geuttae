@@ -317,6 +317,7 @@
         {
           method:  'POST',
           headers: {
+            'apikey':        SUPABASE_ANON_KEY,
             'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
             'Content-Type':  mime,
             'x-upsert':      'true'
@@ -325,7 +326,8 @@
         }
       );
       if (!res.ok) {
-        throw new Error('업로드 실패 ' + res.status);
+        var errText = await res.text().catch(function() { return ''; });
+        throw new Error('업로드 실패 ' + res.status + ' ' + errText);
       }
       return SUPABASE_URL + '/storage/v1/object/public/capsule-photos/' + path;
     }
@@ -375,9 +377,10 @@
         }
       }
 
-      /* URL 배열만 저장 (base64 아님 → 용량 걱정 없음) */
-      sessionStorage.setItem('capsule_photo_urls', JSON.stringify(photoUrls));
-      sessionStorage.setItem('capsule_order', JSON.stringify({
+      /* localStorage 사용: TossPayments가 팝업을 열 경우 sessionStorage는
+         팝업과 공유되지 않으므로 같은 origin 어디서든 읽히는 localStorage 사용 */
+      localStorage.setItem('capsule_photo_urls', JSON.stringify(photoUrls));
+      localStorage.setItem('capsule_order', JSON.stringify({
         orderId:       orderId,
         recipient:     recipient,
         timing:        timingEl.value,

@@ -174,14 +174,14 @@
     var orderId    = params.get('orderId')    || '';
     var amount     = Number(params.get('amount') || 50000);
 
-    /* ── sessionStorage에서 주문 데이터 + 사진 URL 로드 ── */
+    /* ── localStorage에서 주문 데이터 + 사진 URL 로드 ── */
     var order     = {};
     var photoUrls = [];
-    try { order     = JSON.parse(sessionStorage.getItem('capsule_order')      || '{}'); } catch(e) {}
-    try { photoUrls = JSON.parse(sessionStorage.getItem('capsule_photo_urls') || '[]'); } catch(e) {}
+    try { order     = JSON.parse(localStorage.getItem('capsule_order')      || '{}'); } catch(e) {}
+    try { photoUrls = JSON.parse(localStorage.getItem('capsule_photo_urls') || '[]'); } catch(e) {}
 
-    sessionStorage.removeItem('capsule_order');
-    sessionStorage.removeItem('capsule_photo_urls');
+    localStorage.removeItem('capsule_order');
+    localStorage.removeItem('capsule_photo_urls');
 
     /* ── UI 렌더링 ── */
     var timingLabel = order.timingLabel || '—';
