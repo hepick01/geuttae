@@ -473,8 +473,8 @@
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
           customerMobilePhone: phone,
-          successUrl:          window.location.origin + '/success.html',
-          failUrl:             window.location.origin + '/fail.html'
+          successUrl:          window.location.href.replace(/\/[^/]*(\?.*)?$/, '/') + 'success.html',
+          failUrl:             window.location.href.replace(/\/[^/]*(\?.*)?$/, '/') + 'fail.html'
         });
       } catch (err) {
         btn.disabled    = false;
