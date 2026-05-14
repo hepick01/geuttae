@@ -909,3 +909,24 @@ body::before {
   .timing-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .order-summary { padding: 24px 20px; }
 }
+
+/* ---- TYPING ANIMATION ---- */
+.typing-cursor {
+  display: inline-block;
+  margin-left: 3px;
+  font-weight: 300;
+  color: var(--brown-light);
+  opacity: 1;
+  transition: opacity 1s ease;
+  animation: typing-blink 0.85s step-end infinite;
+}
+
+.typing-cursor--hide {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes typing-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

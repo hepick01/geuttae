@@ -34,7 +34,7 @@
     <div class="hero-inner">
       <div class="hero-stamp-tag">Time Capsule</div>
 
-      <h1 class="hero-title">그때, 우리는</h1>
+      <h1 class="hero-title" id="heroTitle"></h1>
 
       <p class="hero-subtitle">
         당신의 소중한 순간을 봉인하고,<br>
@@ -162,5 +162,40 @@
     </div>
   </footer>
 
+  <script>
+    (function () {
+      var el    = document.getElementById('heroTitle');
+      var text  = '그때, 우리는';
+      var SPEED = 185;   /* ms per character — slow, emotional */
+      var i     = 0;
+
+      /* cursor element */
+      var cursor = document.createElement('span');
+      cursor.className   = 'typing-cursor';
+      cursor.textContent = '|';
+
+      /* typed text container */
+      var typed = document.createElement('span');
+
+      el.appendChild(typed);
+      el.appendChild(cursor);
+
+      function typeNext() {
+        if (i < text.length) {
+          typed.textContent += text[i++];
+          setTimeout(typeNext, SPEED + (Math.random() * 40 - 20));
+        } else {
+          /* blink for 2.6 s then fade out */
+          setTimeout(function () {
+            cursor.classList.add('typing-cursor--hide');
+            setTimeout(function () { cursor.remove(); }, 1000);
+          }, 2600);
+        }
+      }
+
+      /* begin after a quiet pause */
+      setTimeout(typeNext, 750);
+    })();
+  </script>
 </body>
 </html>
