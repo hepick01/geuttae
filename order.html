@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>주문하기 — 그때, 우리는</title>
-  <meta name="description" content="타임캡슐 주문 페이지. 사진과 편지를 담아 정해진 날짜에 배송되는 실물 타임캡슐을 만들어보세요.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -13,18 +12,12 @@
 </head>
 <body>
 
-  <!-- =========================================================
-       HEADER
-       ========================================================= -->
   <header class="site-header">
     <div class="container">
       <a href="index.html" class="site-logo">그때, 우리는</a>
     </div>
   </header>
 
-  <!-- =========================================================
-       ORDER HERO
-       ========================================================= -->
   <div class="order-hero">
     <div class="container">
       <p class="section-eyebrow">Order</p>
@@ -37,59 +30,41 @@
     </div>
   </div>
 
-  <!-- =========================================================
-       ORDER FORM
-       ========================================================= -->
   <section class="order-section">
     <div class="container">
       <form class="order-form" id="orderForm" novalidate>
 
-        <!-- ── 01. 사진 업로드 ── -->
+        <!-- 01. 사진 업로드 -->
         <div class="form-group">
           <label class="form-label">
             <span class="label-num">01</span>
             사진 업로드
             <span class="label-hint">JPG · PNG · 최대 20장</span>
           </label>
-
           <div class="photo-upload-zone" id="photoZone">
-            <input
-              type="file"
-              id="photoInput"
-              name="photos[]"
-              multiple
-              accept="image/*"
-              aria-label="사진 파일 선택"
-            >
+            <input type="file" id="photoInput" name="photos[]" multiple accept="image/*" aria-label="사진 파일 선택">
             <span class="upload-icon">📷</span>
             <p class="upload-text">여기를 클릭하거나 사진을 드래그하세요</p>
             <p class="upload-sub">인생의 한 장면들을 담아주세요 · 최대 20장</p>
           </div>
-
           <div class="photo-preview-grid" id="photoPreview"></div>
           <p class="photo-count-note" id="photoCountNote"></p>
         </div>
 
         <hr class="form-sep">
 
-        <!-- ── 02. 편지 작성 ── -->
+        <!-- 02. 편지 작성 -->
         <div class="form-group">
           <label class="form-label" for="letter">
             <span class="label-num">02</span>
             편지 작성
             <span class="label-hint">미래의 나, 또는 우리에게</span>
           </label>
-
-          <textarea
-            id="letter"
-            name="letter"
-            class="form-textarea"
+          <textarea id="letter" name="letter" class="form-textarea"
             placeholder="그때의 우리에게…
 
 지금 이 순간 가장 소중한 것, 기억하고 싶은 것들을 적어보세요.
-1년 후, 3년 후, 혹은 10년 후의 당신이 이 편지를 읽을 거예요."
-            rows="12"
-          ></textarea>
+1년 후, 3년 후, 혹은 10년 후의 당신이 이 편지를 읽을 거예요." rows="12"></textarea>
           <div class="textarea-footer">
             <span id="charCount">0</span>자
           </div>
@@ -97,35 +72,27 @@
 
         <hr class="form-sep">
 
-        <!-- ── 03. 받는 사람 이름 ── -->
+        <!-- 03. 받는 사람 -->
         <div class="form-group">
           <label class="form-label" for="recipient">
             <span class="label-num">03</span>
             받는 사람 이름
             <span class="label-hint">박스 겉면에 인쇄됩니다</span>
           </label>
-          <input
-            type="text"
-            id="recipient"
-            name="recipient"
-            class="form-input"
-            placeholder="예: 10년 후의 우리에게,  또는  박지수에게"
-            required
-          >
+          <input type="text" id="recipient" name="recipient" class="form-input"
+            placeholder="예: 10년 후의 우리에게,  또는  박지수에게" required>
         </div>
 
         <hr class="form-sep">
 
-        <!-- ── 04. 발송 시기 ── -->
+        <!-- 04. 발송 시기 -->
         <div class="form-group">
           <p class="form-label" style="cursor:default;">
             <span class="label-num">04</span>
             발송 시기 선택
             <span class="label-hint">주문일로부터</span>
           </p>
-
           <div class="timing-grid">
-
             <label class="timing-option">
               <input type="radio" name="timing" value="1year" required>
               <span class="timing-face">
@@ -133,7 +100,6 @@
                 <span class="timing-label">후</span>
               </span>
             </label>
-
             <label class="timing-option">
               <input type="radio" name="timing" value="3years">
               <span class="timing-face">
@@ -141,7 +107,6 @@
                 <span class="timing-label">후</span>
               </span>
             </label>
-
             <label class="timing-option">
               <input type="radio" name="timing" value="5years">
               <span class="timing-face">
@@ -149,7 +114,6 @@
                 <span class="timing-label">후</span>
               </span>
             </label>
-
             <label class="timing-option">
               <input type="radio" name="timing" value="10years">
               <span class="timing-face">
@@ -157,58 +121,40 @@
                 <span class="timing-label">후</span>
               </span>
             </label>
-
           </div>
         </div>
 
         <hr class="form-sep">
 
-        <!-- ── 05. 받을 주소 ── -->
+        <!-- 05. 주소 -->
         <div class="form-group">
           <label class="form-label" for="address">
             <span class="label-num">05</span>
             받을 주소
             <span class="label-hint">정해진 날짜에 이 주소로 배송</span>
           </label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            class="form-input"
-            placeholder="도로명 주소  예: 서울특별시 마포구 와우산로 ○○"
-            required
-          >
-          <input
-            type="text"
-            id="addressDetail"
-            name="address_detail"
-            class="form-input"
-            placeholder="상세 주소  예: ○○아파트 ○동 ○○○호"
-          >
+          <input type="text" id="address" name="address" class="form-input"
+            placeholder="도로명 주소  예: 서울특별시 마포구 와우산로 ○○" required>
+          <input type="text" id="addressDetail" name="address_detail" class="form-input"
+            placeholder="상세 주소  예: ○○아파트 ○동 ○○○호">
         </div>
 
         <hr class="form-sep">
 
-        <!-- ── 06. 주문자 전화번호 ── -->
+        <!-- 06. 전화번호 -->
         <div class="form-group">
           <label class="form-label" for="phone">
             <span class="label-num">06</span>
             주문자 전화번호
             <span class="label-hint">주문 확인 및 발송 안내</span>
           </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            class="form-input"
-            placeholder="010-0000-0000"
-            required
-          >
+          <input type="tel" id="phone" name="phone" class="form-input"
+            placeholder="010-0000-0000" required>
         </div>
 
         <hr class="form-sep">
 
-        <!-- ── 주문 요약 ── -->
+        <!-- 주문 요약 -->
         <div class="order-summary">
           <p class="summary-title">Order Summary</p>
           <div class="summary-row">
@@ -229,7 +175,6 @@
           </div>
         </div>
 
-        <!-- ── 결제 버튼 ── -->
         <button type="submit" class="payment-btn">
           결제하기 &nbsp;—&nbsp; ₩ 50,000
         </button>
@@ -243,9 +188,6 @@
     </div>
   </section>
 
-  <!-- =========================================================
-       FOOTER
-       ========================================================= -->
   <footer class="site-footer">
     <div class="container">
       <p class="footer-brand">그때, 우리는</p>
@@ -255,60 +197,53 @@
     </div>
   </footer>
 
-  <!-- =========================================================
-       SCRIPTS
-       ========================================================= -->
   <script>
-    /* ── 토스페이먼츠 테스트 클라이언트 키 ──
-       실 서비스 전 토스페이먼츠 대시보드(https://developers.tosspayments.com)에서
-       발급받은 본인 테스트 클라이언트 키로 교체하세요. */
-    const TOSS_CLIENT_KEY = 'test_ck_yL0qZ4G1VOL7KJWzYpLYroWb2MQY';
+    var TOSS_CLIENT_KEY = 'test_ck_yL0qZ4G1VOL7KJWzYpLYroWb2MQY';
 
-    /* ── 구글 Apps Script 웹앱 URL ── */
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
+    var TIMING_LABEL = {
+      '1year':   '1년 후',
+      '3years':  '3년 후',
+      '5years':  '5년 후',
+      '10years': '10년 후'
+    };
 
-    /* ── Photo Upload ── */
-    const photoZone    = document.getElementById('photoZone');
-    const photoInput   = document.getElementById('photoInput');
-    const photoPreview = document.getElementById('photoPreview');
-    const photoNote    = document.getElementById('photoCountNote');
+    /* ── 사진 업로드 UI ── */
+    var photoZone    = document.getElementById('photoZone');
+    var photoInput   = document.getElementById('photoInput');
+    var photoPreview = document.getElementById('photoPreview');
+    var photoNote    = document.getElementById('photoCountNote');
+    var uploadedFiles = [];
 
-    let uploadedFiles = [];
-
-    photoZone.addEventListener('dragover', (e) => {
+    photoZone.addEventListener('dragover', function(e) {
       e.preventDefault();
       photoZone.classList.add('dragover');
     });
-
-    photoZone.addEventListener('dragleave', () => {
+    photoZone.addEventListener('dragleave', function() {
       photoZone.classList.remove('dragover');
     });
-
-    photoZone.addEventListener('drop', (e) => {
+    photoZone.addEventListener('drop', function(e) {
       e.preventDefault();
       photoZone.classList.remove('dragover');
       handleFiles(e.dataTransfer.files);
     });
-
-    photoInput.addEventListener('change', (e) => {
+    photoInput.addEventListener('change', function(e) {
       handleFiles(e.target.files);
     });
 
     function handleFiles(files) {
-      const newFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
-      const combined = [...uploadedFiles, ...newFiles].slice(0, 20);
-      uploadedFiles = combined;
+      var newFiles = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
+      uploadedFiles = uploadedFiles.concat(newFiles).slice(0, 20);
       renderPreviews();
     }
 
     function renderPreviews() {
       photoPreview.innerHTML = '';
-      uploadedFiles.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const item = document.createElement('div');
+      uploadedFiles.forEach(function(file) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var item = document.createElement('div');
           item.className = 'preview-item';
-          const img = document.createElement('img');
+          var img = document.createElement('img');
           img.src = ev.target.result;
           img.alt = file.name;
           item.appendChild(img);
@@ -316,48 +251,44 @@
         };
         reader.readAsDataURL(file);
       });
-
-      if (uploadedFiles.length > 0) {
-        photoNote.textContent = `${uploadedFiles.length}장 선택됨 (최대 20장)`;
-      } else {
-        photoNote.textContent = '';
-      }
+      photoNote.textContent = uploadedFiles.length > 0 ? uploadedFiles.length + '장 선택됨 (최대 20장)' : '';
     }
 
-    /* ── Letter char count ── */
-    const letterEl    = document.getElementById('letter');
-    const charCountEl = document.getElementById('charCount');
-
-    letterEl.addEventListener('input', () => {
-      charCountEl.textContent = letterEl.value.length.toLocaleString();
+    /* ── 편지 글자 수 ── */
+    var letterEl    = document.getElementById('letter');
+    var charCountEl = document.getElementById('charCount');
+    letterEl.addEventListener('input', function() {
+      charCountEl.textContent = letterEl.value.length;
     });
 
-    /* ── 고유 주문 ID 생성 ── */
+    /* ── 주문 ID 생성 ── */
     function generateOrderId() {
-      const ts  = Date.now().toString(36);
-      const rnd = Math.random().toString(36).substr(2, 8);
-      return `capsule-${ts}-${rnd}`;
+      var ts  = Date.now().toString(36);
+      var rnd = Math.random().toString(36).substr(2, 8);
+      return 'capsule-' + ts + '-' + rnd;
     }
 
-    /* ── 이미지 압축 (800px 이하, JPEG 0.72) ── */
+    /* ── 이미지 압축 (700px, JPEG 0.7) ── */
     function compressImage(file) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onerror = () => resolve(null);
-        reader.onload = (ev) => {
-          const img = new Image();
-          img.onerror = () => resolve(null);
-          img.onload = () => {
-            const MAX = 800;
-            let w = img.naturalWidth, h = img.naturalHeight;
+      return new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onerror = function() { resolve(null); };
+        reader.onload = function(ev) {
+          var img = new Image();
+          img.onerror = function() { resolve(null); };
+          img.onload = function() {
+            var MAX = 700;
+            var w = img.naturalWidth;
+            var h = img.naturalHeight;
             if (w > MAX || h > MAX) {
               if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
               else        { w = Math.round(w * MAX / h); h = MAX; }
             }
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
+            var canvas = document.createElement('canvas');
+            canvas.width  = w;
+            canvas.height = h;
             canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.72));
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
           };
           img.src = ev.target.result;
         };
@@ -365,114 +296,86 @@
       });
     }
 
-    /* ── 사진 → 구글 드라이브 업로드 (no-cors: fire-and-forget) ── */
-    async function uploadPhotos(photos, orderId, recipient) {
-      try {
-        await fetch(APPS_SCRIPT_URL, {
-          method:  'POST',
-          mode:    'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action:    'uploadPhotos',
-            orderId:   String(orderId   || ''),
-            recipient: String(recipient || ''),
-            photos:    photos,
-          }),
-        });
-      } catch (err) {
-        console.error('[Drive Upload]', err);
-      }
-    }
-
-    /* ── 발송 시기 한국어 변환 ── */
-    const TIMING_LABEL = {
-      '1year':   '1년 후',
-      '3years':  '3년 후',
-      '5years':  '5년 후',
-      '10years': '10년 후',
-    };
-
-    /* ── Form submit → 토스페이먼츠 결제 요청 ── */
-    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+    /* ── 폼 제출 ── */
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      submitOrder();
+    });
 
-      /* 유효성 검사 */
-      const timingEl = document.querySelector('input[name="timing"]:checked');
-      if (!timingEl) {
-        alert('발송 시기를 선택해주세요.');
-        return;
-      }
+    async function submitOrder() {
+      var timingEl = document.querySelector('input[name="timing"]:checked');
+      if (!timingEl) { alert('발송 시기를 선택해주세요.'); return; }
 
-      const recipient    = document.getElementById('recipient').value.trim();
-      const address      = document.getElementById('address').value.trim();
-      const addressDetail= document.getElementById('addressDetail').value.trim();
-      const phone        = document.getElementById('phone').value.trim();
-      const letter       = letterEl.value;
+      var recipient     = document.getElementById('recipient').value.trim();
+      var address       = document.getElementById('address').value.trim();
+      var addressDetail = document.getElementById('addressDetail').value.trim();
+      var phone         = document.getElementById('phone').value.trim();
+      var letter        = letterEl.value;
 
       if (!recipient) { alert('받는 사람 이름을 입력해주세요.'); document.getElementById('recipient').focus(); return; }
       if (!address)   { alert('받을 주소를 입력해주세요.');       document.getElementById('address').focus();   return; }
       if (!phone)     { alert('주문자 전화번호를 입력해주세요.');   document.getElementById('phone').focus();     return; }
 
-      /* 버튼 비활성화 */
-      const btn = document.querySelector('.payment-btn');
+      var btn = document.querySelector('.payment-btn');
       btn.disabled = true;
 
-      /* 주문 ID 먼저 생성 (사진 업로드 폴더명에 사용) */
-      const orderId = generateOrderId();
+      var orderId = generateOrderId();
 
-      /* 사진 압축 → 결제 전에 바로 구글 드라이브에 업로드
-         (sessionStorage 용량 문제 없이 폴더 URL만 저장) */
+      /* 사진 압축 후 sessionStorage에 저장
+         success.html에서 읽어서 Apps Script로 전송 */
+      var photos = [];
       if (uploadedFiles.length > 0) {
-        btn.textContent = `사진 압축 중…`;
-        const compressed = (await Promise.all(uploadedFiles.map(compressImage))).filter(Boolean);
-        if (compressed.length > 0) {
-          btn.textContent = `사진 ${compressed.length}장 업로드 중…`;
-          await uploadPhotos(compressed, orderId, recipient);
+        btn.textContent = '사진 압축 중…';
+        var compressed = await Promise.all(uploadedFiles.map(compressImage));
+        photos = compressed.filter(function(x) { return x !== null; });
+        try {
+          sessionStorage.setItem('capsule_photos', JSON.stringify(photos));
+        } catch (storageErr) {
+          /* 용량 초과 시 사진 없이 진행 */
+          console.warn('사진 저장 실패 (용량 초과):', storageErr);
+          sessionStorage.removeItem('capsule_photos');
+          photos = [];
         }
+      } else {
+        sessionStorage.removeItem('capsule_photos');
       }
-      sessionStorage.removeItem('capsule_folder_url');
 
-      /* 주문 정보 sessionStorage에 저장
-         (성공 페이지에서 주문 내역 표시에 활용) */
+      /* 주문 정보 저장 */
       sessionStorage.setItem('capsule_order', JSON.stringify({
-        orderId,
-        recipient,
-        timing: timingEl.value,
-        timingLabel: TIMING_LABEL[timingEl.value],
-        address,
-        addressDetail,
-        phone,
-        letter,
-        photoCount: uploadedFiles.length,
-        createdAt: new Date().toISOString(),
+        orderId:      orderId,
+        recipient:    recipient,
+        timing:       timingEl.value,
+        timingLabel:  TIMING_LABEL[timingEl.value],
+        address:      address,
+        addressDetail: addressDetail,
+        phone:        phone,
+        letter:       letter,
+        photoCount:   photos.length,
+        createdAt:    new Date().toISOString()
       }));
 
-      /* 현재 페이지 기준 success/fail URL 자동 계산
-         (배포 위치가 바뀌어도 동작) */
-      const base = window.location.href.replace(/\/order\.html.*$/, '/');
-
+      var base = window.location.href.replace(/\/order\.html.*$/, '/');
       btn.textContent = '결제창 열는 중…';
 
       try {
-        const tossPayments = TossPayments(TOSS_CLIENT_KEY);
+        var tossPayments = TossPayments(TOSS_CLIENT_KEY);
         await tossPayments.requestPayment('카드', {
-          amount:       50000,
-          orderId:      orderId,
-          orderName:    '그때, 우리는 타임캡슐',
-          customerName: recipient,
+          amount:              50000,
+          orderId:             orderId,
+          orderName:           '그때, 우리는 타임캡슐',
+          customerName:        recipient,
           customerMobilePhone: phone,
-          successUrl:   base + 'success.html',
-          failUrl:      base + 'fail.html',
+          successUrl:          base + 'success.html',
+          failUrl:             base + 'fail.html'
         });
-        /* 성공 시 토스가 successUrl로 리다이렉트하므로 여기에 도달하지 않음 */
       } catch (err) {
         btn.disabled = false;
         btn.textContent = '결제하기 — ₩ 50,000';
-        if (err.code === 'USER_CANCEL') return; /* 사용자 취소는 조용히 처리 */
-        console.error('[Toss Error]', err);
+        if (err.code === 'USER_CANCEL') return;
+        console.error('[Toss]', err);
         alert('결제 중 오류가 발생했습니다.\n\n' + err.message);
       }
-    });
+    }
   </script>
 
 </body>
