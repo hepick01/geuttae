@@ -166,17 +166,22 @@
   </footer>
 
   <script>
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
+
     /* ── URL 파라미터 (토스가 붙여줌) ── */
     var params     = new URLSearchParams(window.location.search);
     var paymentKey = params.get('paymentKey') || '';
     var orderId    = params.get('orderId')    || '';
     var amount     = Number(params.get('amount') || 50000);
 
-    /* ── sessionStorage에서 주문 + 사진 로드 ── */
-    var order  = {};
-    var photos = [];
-    try { order  = JSON.parse(sessionStorage.getItem('capsule_order')  || '{}'); } catch(e) {}
-    try { photos = JSON.parse(sessionStorage.getItem('capsule_photos') || '[]'); } catch(e) {}
+    /* ── sessionStorage에서 주문 데이터 + 사진 URL 로드 ── */
+    var order     = {};
+    var photoUrls = [];
+    try { order     = JSON.parse(sessionStorage.getItem('capsule_order')      || '{}'); } catch(e) {}
+    try { photoUrls = JSON.parse(sessionStorage.getItem('capsule_photo_urls') || '[]'); } catch(e) {}
+
+    sessionStorage.removeItem('capsule_order');
+    sessionStorage.removeItem('capsule_photo_urls');
 
     /* ── UI 렌더링 ── */
     var timingLabel = order.timingLabel || '—';
@@ -211,48 +216,37 @@
         '<p><strong>' + timingLabel + '</strong>, 약속한 주소로 박스가 출발합니다.</p>' +
       '</div>';
 
-    /* ── /api/process-order 호출 (같은 도메인 → CORS 없음, 응답 읽기 가능) ── */
-    var statusEl = document.getElementById('saveStatus');
+    /* ── 구글 시트 저장 (Apps Script, no-cors) ── */
+    var statusEl    = document.getElementById('saveStatus');
+    var photoFolder = photoUrls.length > 0 ? photoUrls[0].replace(/\/photo_\d+\.jpg$/, '/') : '';
 
-    var payload = {
-      orderId:     orderId || order.orderId || '',
-      paymentKey:  paymentKey,
-      amount:      amount,
-      recipient:   order.recipient    || '',
-      phone:       order.phone        || '',
-      address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
-      timingLabel: order.timingLabel  || '',
-      letter:      order.letter       || '',
-      photoCount:  order.photoCount   || 0,
-      paymentDate: new Date().toLocaleString('ko-KR'),
-      photos:      photos
-    };
-
-    /* sessionStorage는 요청 전에 정리 */
-    sessionStorage.removeItem('capsule_order');
-    sessionStorage.removeItem('capsule_photos');
-
-    fetch('/api/process-order', {
+    fetch(APPS_SCRIPT_URL, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload)
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (data.ok) {
-        if (data.folderUrl) {
-          statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + data.folderUrl + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 폴더 보기 →</a>';
-        } else {
-          statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
-        }
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action:      'processOrder',
+        orderId:     orderId || order.orderId || '',
+        paymentKey:  paymentKey,
+        amount:      amount,
+        recipient:   order.recipient   || '',
+        phone:       order.phone       || '',
+        address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
+        timingLabel: order.timingLabel || '',
+        letter:      order.letter      || '',
+        photoCount:  order.photoCount  || 0,
+        paymentDate: new Date().toLocaleString('ko-KR'),
+        folderUrl:   photoFolder
+      })
+    }).then(function() {
+      if (photoUrls.length > 0) {
+        statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + photoUrls[0] + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 확인 →</a>';
       } else {
-        statusEl.textContent = '저장 중 오류가 발생했습니다. 문의해주세요.';
-        console.error('process-order error:', data.error);
+        statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
       }
-    })
-    .catch(function(err) {
-      statusEl.textContent = '저장 중 오류가 발생했습니다. 문의해주세요.';
-      console.error('fetch error:', err);
+    }).catch(function(err) {
+      console.error('[saveOrder]', err);
+      statusEl.textContent = '';
     });
   </script>
 

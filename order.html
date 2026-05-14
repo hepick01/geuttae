@@ -198,7 +198,11 @@
   </footer>
 
   <script>
-    var TOSS_CLIENT_KEY = 'test_ck_yL0qZ4G1VOL7KJWzYpLYroWb2MQY';
+    var TOSS_CLIENT_KEY   = 'test_ck_yL0qZ4G1VOL7KJWzYpLYroWb2MQY';
+
+    /* ── Supabase 설정 (프로젝트 URL과 anon key 교체) ── */
+    var SUPABASE_URL      = 'YOUR_SUPABASE_URL';       // 예: https://abcdefg.supabase.co
+    var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';  // Settings → API → anon public
 
     var TIMING_LABEL = {
       '1year':   '1년 후',
@@ -268,7 +272,7 @@
       return 'capsule-' + ts + '-' + rnd;
     }
 
-    /* ── 이미지 압축 (600px, JPEG 0.7) ── */
+    /* ── 이미지 압축 (800px, JPEG 0.8) ── */
     function compressImage(file) {
       return new Promise(function(resolve) {
         var reader = new FileReader();
@@ -277,7 +281,7 @@
           var img = new Image();
           img.onerror = function() { resolve(null); };
           img.onload = function() {
-            var MAX = 600;
+            var MAX = 800;
             var w = img.naturalWidth;
             var h = img.naturalHeight;
             if (w > MAX || h > MAX) {
@@ -288,12 +292,42 @@
             canvas.width  = w;
             canvas.height = h;
             canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.7));
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
           };
           img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
       });
+    }
+
+    /* ── Supabase Storage 업로드 (SDK 없이 REST API 직접 사용) ── */
+    async function uploadPhoto(dataUrl, path) {
+      var comma  = dataUrl.indexOf(',');
+      var mime   = dataUrl.slice(0, comma).match(/:(.*?);/)[1];
+      var b64    = dataUrl.slice(comma + 1);
+      var binary = atob(b64);
+      var bytes  = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      var blob = new Blob([bytes], { type: mime });
+
+      var res = await fetch(
+        SUPABASE_URL + '/storage/v1/object/capsule-photos/' + path,
+        {
+          method:  'POST',
+          headers: {
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type':  mime,
+            'x-upsert':      'true'
+          },
+          body: blob
+        }
+      );
+      if (!res.ok) {
+        throw new Error('업로드 실패 ' + res.status);
+      }
+      return SUPABASE_URL + '/storage/v1/object/public/capsule-photos/' + path;
     }
 
     /* ── 폼 제출 ── */
@@ -321,24 +355,28 @@
 
       var orderId = generateOrderId();
 
-      /* 사진 압축 → sessionStorage 저장
-         (success.html에서 /api/process-order로 전송) */
-      var photos = [];
+      /* 사진 압축 → Supabase Storage 업로드 → URL 배열만 sessionStorage에 저장 */
+      var photoUrls = [];
       if (uploadedFiles.length > 0) {
         btn.textContent = '사진 압축 중…';
         var compressed = await Promise.all(uploadedFiles.map(compressImage));
-        photos = compressed.filter(function(x) { return x !== null; });
-        try {
-          sessionStorage.setItem('capsule_photos', JSON.stringify(photos));
-        } catch (storageErr) {
-          console.warn('sessionStorage 용량 초과, 사진 제외:', storageErr);
-          sessionStorage.removeItem('capsule_photos');
-          photos = [];
+        var valid = compressed.filter(function(x) { return x !== null; });
+
+        for (var i = 0; i < valid.length; i++) {
+          var num  = (i + 1 < 10) ? '0' + (i + 1) : '' + (i + 1);
+          var path = orderId + '/photo_' + num + '.jpg';
+          btn.textContent = '사진 ' + (i + 1) + '/' + valid.length + ' 업로드 중…';
+          try {
+            var url = await uploadPhoto(valid[i], path);
+            photoUrls.push(url);
+          } catch (uploadErr) {
+            console.error('사진 ' + (i + 1) + ' 실패:', uploadErr);
+          }
         }
-      } else {
-        sessionStorage.removeItem('capsule_photos');
       }
 
+      /* URL 배열만 저장 (base64 아님 → 용량 걱정 없음) */
+      sessionStorage.setItem('capsule_photo_urls', JSON.stringify(photoUrls));
       sessionStorage.setItem('capsule_order', JSON.stringify({
         orderId:       orderId,
         recipient:     recipient,
@@ -348,7 +386,7 @@
         addressDetail: addressDetail,
         phone:         phone,
         letter:        letter,
-        photoCount:    photos.length,
+        photoCount:    photoUrls.length,
         createdAt:     new Date().toISOString()
       }));
 
