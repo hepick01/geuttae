@@ -56,13 +56,15 @@
        ========================================================= -->
   <section class="how-section">
     <div class="container">
-      <p class="section-eyebrow">How It Works</p>
-      <h2 class="section-title">이렇게 작동해요</h2>
-      <div class="ornament">✦ &nbsp; ── &nbsp; ✦ &nbsp; ── &nbsp; ✦</div>
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">How It Works</p>
+        <h2 class="section-title">이렇게 작동해요</h2>
+        <div class="ornament">✦ &nbsp; ── &nbsp; ✦ &nbsp; ── &nbsp; ✦</div>
+      </div>
 
       <div class="steps-row">
 
-        <div class="step-card">
+        <div class="step-card fade-up" data-delay="0">
           <div class="step-num">01</div>
           <span class="step-icon">✉️</span>
           <h3>온라인으로 보내기</h3>
@@ -76,7 +78,7 @@
 
         <div class="step-arrow">→</div>
 
-        <div class="step-card">
+        <div class="step-card fade-up" data-delay="160">
           <div class="step-num">02</div>
           <span class="step-icon">📦</span>
           <h3>정성껏 패키징</h3>
@@ -90,7 +92,7 @@
 
         <div class="step-arrow">→</div>
 
-        <div class="step-card">
+        <div class="step-card fade-up" data-delay="320">
           <div class="step-num">03</div>
           <span class="step-icon">🕰️</span>
           <h3>그날, 문 앞에</h3>
@@ -112,11 +114,13 @@
   <section class="pricing-section">
     <div class="container">
 
-      <p class="section-eyebrow">Pricing</p>
-      <h2 class="section-title">가격 안내</h2>
-      <div class="ornament">✦ &nbsp; ── &nbsp; ✦ &nbsp; ── &nbsp; ✦</div>
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Pricing</p>
+        <h2 class="section-title">가격 안내</h2>
+        <div class="ornament">✦ &nbsp; ── &nbsp; ✦ &nbsp; ── &nbsp; ✦</div>
+      </div>
 
-      <div class="pricing-card">
+      <div class="pricing-card fade-up" data-delay="150">
         <div class="pricing-badge">All Inclusive</div>
 
         <h2>타임캡슐 패키지</h2>
@@ -143,7 +147,7 @@
        ========================================================= -->
   <section class="quote-section">
     <div class="container">
-      <p class="big-quote">
+      <p class="big-quote fade-up">
         &ldquo;지금 이 순간도,<br>
         언젠가는 그리운 그때가 됩니다.&rdquo;
       </p>
@@ -195,6 +199,29 @@
 
       /* begin after a quiet pause */
       setTimeout(typeNext, 750);
+    })();
+
+    /* ── 스크롤 페이드인 ── */
+    (function () {
+      var els = document.querySelectorAll('.fade-up');
+
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('is-visible'); });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el    = entry.target;
+          var delay = el.dataset.delay || '0';
+          el.style.transitionDelay = delay + 'ms';
+          el.classList.add('is-visible');
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+      els.forEach(function (el) { observer.observe(el); });
     })();
   </script>
 </body>

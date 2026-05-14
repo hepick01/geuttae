@@ -910,6 +910,18 @@ body::before {
   .order-summary { padding: 24px 20px; }
 }
 
+/* ---- SCROLL FADE-IN ---- */
+.fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ---- TYPING ANIMATION ---- */
 .typing-cursor {
   display: inline-block;
