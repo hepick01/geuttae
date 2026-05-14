@@ -264,6 +264,9 @@
        발급받은 본인 테스트 클라이언트 키로 교체하세요. */
     const TOSS_CLIENT_KEY = 'test_ck_yL0qZ4G1VOL7KJWzYpLYroWb2MQY';
 
+    /* ── 구글 Apps Script 웹앱 URL ── */
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
+
     /* ── Photo Upload ── */
     const photoZone    = document.getElementById('photoZone');
     const photoInput   = document.getElementById('photoInput');
@@ -340,8 +343,10 @@
     function compressImage(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
+        reader.onerror = () => resolve(null);
         reader.onload = (ev) => {
           const img = new Image();
+          img.onerror = () => resolve(null);
           img.onload = () => {
             const MAX = 800;
             let w = img.naturalWidth, h = img.naturalHeight;
@@ -358,6 +363,27 @@
         };
         reader.readAsDataURL(file);
       });
+    }
+
+    /* ── 사진 → 구글 드라이브 업로드 (폴더 URL 반환) ── */
+    async function uploadPhotos(photos, orderId, recipient) {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method:  'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action:    'uploadPhotos',
+            orderId:   orderId,
+            recipient: recipient,
+            photos:    photos,
+          }),
+        });
+        const data = await res.json();
+        return data.folderUrl || '';
+      } catch (err) {
+        console.error('[Drive Upload]', err);
+        return '';
+      }
     }
 
     /* ── 발송 시기 한국어 변환 ── */
@@ -393,22 +419,23 @@
       const btn = document.querySelector('.payment-btn');
       btn.disabled = true;
 
-      /* 사진 압축 → sessionStorage 저장 */
+      /* 주문 ID 먼저 생성 (사진 업로드 폴더명에 사용) */
+      const orderId = generateOrderId();
+
+      /* 사진 압축 → 결제 전에 바로 구글 드라이브에 업로드
+         (sessionStorage 용량 문제 없이 폴더 URL만 저장) */
+      let driveFolderUrl = '';
       if (uploadedFiles.length > 0) {
-        btn.textContent = `사진 ${uploadedFiles.length}장 준비 중…`;
-        const compressed = await Promise.all(uploadedFiles.map(compressImage));
-        /* sessionStorage 용량 초과 시 장수를 줄여가며 저장 */
-        for (let n = compressed.length; n >= 0; n--) {
-          try {
-            sessionStorage.setItem('capsule_photos', JSON.stringify(compressed.slice(0, n)));
-            break;
-          } catch (_) { continue; }
+        btn.textContent = `사진 ${uploadedFiles.length}장 업로드 중…`;
+        const compressed = (await Promise.all(uploadedFiles.map(compressImage))).filter(Boolean);
+        if (compressed.length > 0) {
+          driveFolderUrl = await uploadPhotos(compressed, orderId, recipient);
         }
       }
+      sessionStorage.setItem('capsule_folder_url', driveFolderUrl);
 
       /* 주문 정보 sessionStorage에 저장
          (성공 페이지에서 주문 내역 표시에 활용) */
-      const orderId = generateOrderId();
       sessionStorage.setItem('capsule_order', JSON.stringify({
         orderId,
         recipient,

@@ -272,33 +272,31 @@
        ───────────────────────────────────────────── */
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
 
-    async function saveToSheets(orderData, paymentKey, orderId, amount, photos) {
-      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return { status: 'unconfigured' };
+    async function saveToSheets(orderData, paymentKey, orderId, amount, folderUrl) {
+      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
       try {
-        /* Content-Type을 text/plain으로 설정하면 CORS preflight 없이
-           Apps Script가 응답을 반환하고 브라우저에서 읽을 수 있음 */
-        const res = await fetch(APPS_SCRIPT_URL, {
+        /* no-cors: 응답을 읽지 않아도 되므로 가장 안정적인 방식 */
+        await fetch(APPS_SCRIPT_URL, {
           method:  'POST',
+          mode:    'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
+            action:        'saveOrder',
             recipient:     orderData.recipient    || '',
             phone:         orderData.phone        || '',
             address:       [orderData.address, orderData.addressDetail].filter(Boolean).join(' '),
             timingLabel:   orderData.timingLabel  || '',
             letter:        orderData.letter       || '',
             photoCount:    orderData.photoCount   || 0,
+            folderUrl:     folderUrl || '',
             paymentDate:   new Date().toLocaleString('ko-KR'),
             orderId,
             paymentKey,
             amount:        amount || 50000,
-            photos:        photos || [],
           }),
         });
-        const json = await res.json();
-        return { status: 'ok', folderUrl: json.folderUrl || '' };
       } catch (err) {
         console.error('[Sheets]', err);
-        return { status: 'error' };
       }
     }
 
@@ -394,30 +392,23 @@
       "></p>
     `;
 
-    /* 구글 드라이브 사진 업로드 + 시트 저장 */
-    let photos = [];
-    try { photos = JSON.parse(sessionStorage.getItem('capsule_photos') || '[]'); } catch (_) {}
+    /* 드라이브 폴더 URL (order.html에서 결제 전에 업로드 완료된 것) */
+    const folderUrl = sessionStorage.getItem('capsule_folder_url') || '';
 
+    /* 구글 시트 저장 (fire-and-forget, no-cors로 안정 전송) */
     const statusEl = document.getElementById('sheetsStatus');
     if (APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-      statusEl.textContent = photos.length > 0
-        ? `사진 ${photos.length}장 드라이브 업로드 중… (잠시 기다려주세요)`
-        : '주문 정보 저장 중…';
-
-      saveToSheets(order, paymentKey, orderId, amount, photos).then(result => {
-        if (result.status === 'ok') {
-          statusEl.innerHTML = result.folderUrl
-            ? `✓ 저장 완료 &nbsp;·&nbsp; <a href="${result.folderUrl}" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 폴더 보기 →</a>`
-            : '✓ 주문 정보가 구글 시트에 저장되었습니다.';
-        } else {
-          statusEl.textContent = '주문 정보 저장에 실패했습니다. 관리자에게 문의해주세요.';
-        }
+      statusEl.textContent = '주문 정보 저장 중…';
+      saveToSheets(order, paymentKey, orderId, amount, folderUrl).then(() => {
+        statusEl.innerHTML = folderUrl
+          ? `✓ 저장 완료 &nbsp;·&nbsp; <a href="${folderUrl}" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 폴더 보기 →</a>`
+          : '✓ 주문 정보가 구글 시트에 저장되었습니다.';
       });
     }
 
     /* 사용 완료된 주문 데이터 정리 */
     sessionStorage.removeItem('capsule_order');
-    sessionStorage.removeItem('capsule_photos');
+    sessionStorage.removeItem('capsule_folder_url');
   </script>
 
 </body>
