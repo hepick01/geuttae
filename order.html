@@ -9,6 +9,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://js.tosspayments.com/v1"></script>
+  <style>
+    .preview-item { position: relative; overflow: hidden; }
+    .preview-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .preview-overlay.uploading { background: rgba(0,0,0,0.45); }
+    .preview-overlay.done      { background: rgba(0,0,0,0.18); }
+    .preview-overlay.error     { background: rgba(180,30,30,0.55); }
+    .preview-spinner {
+      width: 26px; height: 26px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: preview-spin 0.75s linear infinite;
+    }
+    @keyframes preview-spin { to { transform: rotate(360deg); } }
+    .preview-check { color: #fff; font-size: 1.5rem; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,0.4); }
+    .preview-err   { color: #fff; font-size: 1.3rem; font-weight: 700; }
+    .preview-remove {
+      position: absolute; top: 5px; right: 5px;
+      width: 22px; height: 22px;
+      background: rgba(0,0,0,0.6); color: #fff;
+      border: none; border-radius: 50%; cursor: pointer;
+      font-size: 15px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .preview-remove:hover { background: rgba(180,0,0,0.85); }
+  </style>
 </head>
 <body>
 
@@ -211,20 +241,25 @@
       '10years': '10년 후'
     };
 
-    /* ── 사진 업로드 UI ── */
-    var photoZone     = document.getElementById('photoZone');
-    var photoInput    = document.getElementById('photoInput');
-    var photoPreview  = document.getElementById('photoPreview');
-    var photoNote     = document.getElementById('photoCountNote');
-    var uploadedFiles = [];
+    /* ── 페이지 로드 시 orderId 미리 생성 ── */
+    function generateOrderId() {
+      return 'capsule-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 8);
+    }
+    var orderId  = generateOrderId();
+    var photoSeq = 0;
+    var photos   = []; /* [{ id, file, status:'uploading'|'done'|'error', url, path }] */
 
-    photoZone.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      photoZone.classList.add('dragover');
-    });
-    photoZone.addEventListener('dragleave', function() {
-      photoZone.classList.remove('dragover');
-    });
+    /* ── UI 요소 ── */
+    var photoZone    = document.getElementById('photoZone');
+    var photoInput   = document.getElementById('photoInput');
+    var photoPreview = document.getElementById('photoPreview');
+    var photoNote    = document.getElementById('photoCountNote');
+    var letterEl     = document.getElementById('letter');
+    var charCountEl  = document.getElementById('charCount');
+
+    /* ── 드래그 앤 드롭 ── */
+    photoZone.addEventListener('dragover',  function(e) { e.preventDefault(); photoZone.classList.add('dragover'); });
+    photoZone.addEventListener('dragleave', function()  { photoZone.classList.remove('dragover'); });
     photoZone.addEventListener('drop', function(e) {
       e.preventDefault();
       photoZone.classList.remove('dragover');
@@ -232,45 +267,93 @@
     });
     photoInput.addEventListener('change', function(e) {
       handleFiles(e.target.files);
+      e.target.value = '';
     });
 
+    /* ── 파일 선택 즉시 업로드 ── */
     function handleFiles(files) {
-      var newFiles = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
-      uploadedFiles = uploadedFiles.concat(newFiles).slice(0, 20);
-      renderPreviews();
+      var newFiles  = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
+      var remaining = 20 - photos.length;
+      if (remaining <= 0) return;
+      newFiles.slice(0, remaining).forEach(function(file) {
+        var id    = photoSeq++;
+        var path  = orderId + '/photo_' + id + '.jpg';
+        var photo = { id: id, file: file, status: 'uploading', url: null, path: path };
+        photos.push(photo);
+        renderPreviews();
+
+        compressImage(file)
+          .then(function(dataUrl) {
+            if (!dataUrl) { photo.status = 'error'; renderPreviews(); return; }
+            return uploadPhoto(dataUrl, path).then(function(url) {
+              photo.status = 'done';
+              photo.url    = url;
+              renderPreviews();
+            });
+          })
+          .catch(function(err) {
+            console.error('[upload]', err);
+            photo.status = 'error';
+            renderPreviews();
+          });
+      });
     }
 
+    /* ── 사진 삭제: UI 즉시 반영 + Supabase 비동기 삭제 ── */
+    function removePhoto(id) {
+      var idx = photos.findIndex(function(p) { return p.id === id; });
+      if (idx === -1) return;
+      var photo = photos.splice(idx, 1)[0];
+      renderPreviews();
+      if (photo.status === 'done') {
+        fetch(SUPABASE_URL + '/storage/v1/object/capsule-photos/' + photo.path, {
+          method:  'DELETE',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        }).catch(function(err) { console.error('[delete]', err); });
+      }
+    }
+
+    /* ── 미리보기 렌더링 ── */
     function renderPreviews() {
       photoPreview.innerHTML = '';
-      uploadedFiles.forEach(function(file) {
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-          var item = document.createElement('div');
-          item.className = 'preview-item';
-          var img = document.createElement('img');
-          img.src = ev.target.result;
-          img.alt = file.name;
-          item.appendChild(img);
-          photoPreview.appendChild(item);
-        };
-        reader.readAsDataURL(file);
+      photos.forEach(function(photo) {
+        var item = document.createElement('div');
+        item.className = 'preview-item';
+
+        var img = document.createElement('img');
+        img.src = URL.createObjectURL(photo.file);
+        img.alt = photo.file.name;
+        item.appendChild(img);
+
+        var ov = document.createElement('div');
+        if (photo.status === 'uploading') {
+          ov.className = 'preview-overlay uploading';
+          ov.innerHTML = '<span class="preview-spinner"></span>';
+          item.appendChild(ov);
+        } else if (photo.status === 'done') {
+          ov.className = 'preview-overlay done';
+          ov.innerHTML = '<span class="preview-check">✓</span>';
+          item.appendChild(ov);
+        } else if (photo.status === 'error') {
+          ov.className = 'preview-overlay error';
+          ov.innerHTML = '<span class="preview-err">!</span>';
+          item.appendChild(ov);
+        }
+
+        var rmBtn = document.createElement('button');
+        rmBtn.type = 'button';
+        rmBtn.className = 'preview-remove';
+        rmBtn.textContent = '×';
+        rmBtn.onclick = (function(pid) { return function() { removePhoto(pid); }; })(photo.id);
+        item.appendChild(rmBtn);
+
+        photoPreview.appendChild(item);
       });
-      photoNote.textContent = uploadedFiles.length > 0 ? uploadedFiles.length + '장 선택됨 (최대 20장)' : '';
+      photoNote.textContent = photos.length > 0 ? photos.length + '장 선택됨 (최대 20장)' : '';
     }
 
-    /* ── 편지 글자 수 ── */
-    var letterEl    = document.getElementById('letter');
-    var charCountEl = document.getElementById('charCount');
-    letterEl.addEventListener('input', function() {
-      charCountEl.textContent = letterEl.value.length;
-    });
-
-    /* ── 주문 ID 생성 ── */
-    function generateOrderId() {
-      var ts  = Date.now().toString(36);
-      var rnd = Math.random().toString(36).substr(2, 8);
-      return 'capsule-' + ts + '-' + rnd;
-    }
+    /* ── 글자 수 ── */
+    letterEl.addEventListener('input', function() { charCountEl.textContent = letterEl.value.length; });
 
     /* ── 이미지 압축 (800px, JPEG 0.8) ── */
     function compressImage(file) {
@@ -281,16 +364,13 @@
           var img = new Image();
           img.onerror = function() { resolve(null); };
           img.onload = function() {
-            var MAX = 800;
-            var w = img.naturalWidth;
-            var h = img.naturalHeight;
+            var MAX = 800, w = img.naturalWidth, h = img.naturalHeight;
             if (w > MAX || h > MAX) {
               if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
               else        { w = Math.round(w * MAX / h); h = MAX; }
             }
             var canvas = document.createElement('canvas');
-            canvas.width  = w;
-            canvas.height = h;
+            canvas.width = w; canvas.height = h;
             canvas.getContext('2d').drawImage(img, 0, 0, w, h);
             resolve(canvas.toDataURL('image/jpeg', 0.8));
           };
@@ -300,16 +380,14 @@
       });
     }
 
-    /* ── Supabase Storage 업로드 (SDK 없이 REST API 직접 사용) ── */
+    /* ── Supabase Storage 업로드 ── */
     async function uploadPhoto(dataUrl, path) {
       var comma  = dataUrl.indexOf(',');
       var mime   = dataUrl.slice(0, comma).match(/:(.*?);/)[1];
       var b64    = dataUrl.slice(comma + 1);
       var binary = atob(b64);
       var bytes  = new Uint8Array(binary.length);
-      for (var i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
       var blob = new Blob([bytes], { type: mime });
 
       var res = await fetch(
@@ -332,7 +410,7 @@
       return SUPABASE_URL + '/storage/v1/object/public/capsule-photos/' + path;
     }
 
-    /* ── 폼 제출 ── */
+    /* ── 폼 제출: 이미 업로드된 URL만 사용 ── */
     document.getElementById('orderForm').addEventListener('submit', function(e) {
       e.preventDefault();
       submitOrder();
@@ -352,33 +430,19 @@
       if (!address)   { alert('받을 주소를 입력해주세요.');       document.getElementById('address').focus();   return; }
       if (!phone)     { alert('주문자 전화번호를 입력해주세요.');   document.getElementById('phone').focus();     return; }
 
-      var btn = document.querySelector('.payment-btn');
-      btn.disabled = true;
-
-      var orderId = generateOrderId();
-
-      /* 사진 압축 → Supabase Storage 업로드 → URL 배열만 sessionStorage에 저장 */
-      var photoUrls = [];
-      if (uploadedFiles.length > 0) {
-        btn.textContent = '사진 압축 중…';
-        var compressed = await Promise.all(uploadedFiles.map(compressImage));
-        var valid = compressed.filter(function(x) { return x !== null; });
-
-        for (var i = 0; i < valid.length; i++) {
-          var num  = (i + 1 < 10) ? '0' + (i + 1) : '' + (i + 1);
-          var path = orderId + '/photo_' + num + '.jpg';
-          btn.textContent = '사진 ' + (i + 1) + '/' + valid.length + ' 업로드 중…';
-          try {
-            var url = await uploadPhoto(valid[i], path);
-            photoUrls.push(url);
-          } catch (uploadErr) {
-            console.error('사진 ' + (i + 1) + ' 실패:', uploadErr);
-          }
-        }
+      if (photos.some(function(p) { return p.status === 'uploading'; })) {
+        alert('사진 업로드 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
       }
 
-      /* localStorage 사용: TossPayments가 팝업을 열 경우 sessionStorage는
-         팝업과 공유되지 않으므로 같은 origin 어디서든 읽히는 localStorage 사용 */
+      var btn = document.querySelector('.payment-btn');
+      btn.disabled    = true;
+      btn.textContent = '결제창 열는 중…';
+
+      var photoUrls = photos
+        .filter(function(p) { return p.status === 'done'; })
+        .map(function(p) { return p.url; });
+
       localStorage.setItem('capsule_photo_urls', JSON.stringify(photoUrls));
       localStorage.setItem('capsule_order', JSON.stringify({
         orderId:       orderId,
@@ -393,9 +457,6 @@
         createdAt:     new Date().toISOString()
       }));
 
-      var base = window.location.origin + '/';
-      btn.textContent = '결제창 열는 중…';
-
       try {
         var tossPayments = TossPayments(TOSS_CLIENT_KEY);
         await tossPayments.requestPayment('카드', {
@@ -404,11 +465,11 @@
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
           customerMobilePhone: phone,
-          successUrl:          base + 'success.html',
-          failUrl:             base + 'fail.html'
+          successUrl:          window.location.origin + '/success.html',
+          failUrl:             window.location.origin + '/fail.html'
         });
       } catch (err) {
-        btn.disabled = false;
+        btn.disabled    = false;
         btn.textContent = '결제하기 — ₩ 50,000';
         if (err.code === 'USER_CANCEL') return;
         console.error('[Toss]', err);
