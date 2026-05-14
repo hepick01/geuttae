@@ -267,13 +267,46 @@
        ───────────────────────────────────────────── */
 
     /* ─────────────────────────────────────────────
-       4. UI 렌더링
+       4. 구글 시트 저장
+          APPS_SCRIPT_URL 을 배포한 웹앱 URL로 교체하세요.
+       ───────────────────────────────────────────── */
+    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    async function saveToSheets(orderData, paymentKey, orderId, amount) {
+      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return 'unconfigured';
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method:  'POST',
+          mode:    'no-cors',           // Google Apps Script CORS 우회
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            recipient:     orderData.recipient    || '',
+            phone:         orderData.phone        || '',
+            address:       [orderData.address, orderData.addressDetail].filter(Boolean).join(' '),
+            timingLabel:   orderData.timingLabel  || '',
+            letter:        orderData.letter       || '',
+            photoCount:    orderData.photoCount   || 0,
+            paymentDate:   new Date().toLocaleString('ko-KR'),
+            orderId:       orderId,
+            paymentKey:    paymentKey,
+            amount:        amount || 50000,
+          }),
+        });
+        return 'ok';
+      } catch (err) {
+        console.error('[Sheets]', err);
+        return 'error';
+      }
+    }
+
+    /* ─────────────────────────────────────────────
+       5. UI 렌더링
        ───────────────────────────────────────────── */
     const card = document.getElementById('successCard');
 
     const timingLabel = order.timingLabel || '—';
     const recipient   = order.recipient   || '—';
-    const email       = order.email       || '—';
+    const phone       = order.phone       || '—';
     const photoCount  = order.photoCount  != null ? `${order.photoCount}장` : '—';
 
     /* 예상 발송일 계산 */
@@ -327,8 +360,8 @@
           <span class="detail-value">${deliveryYear}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">확인 이메일</span>
-          <span class="detail-value">${email}</span>
+          <span class="detail-label">전화번호</span>
+          <span class="detail-value">${phone}</span>
         </div>
       </div>
 
@@ -351,7 +384,23 @@
       <a href="index.html" class="btn-home">메인으로 돌아가기</a>
 
       ${paymentKey ? `<p class="payment-key-row">paymentKey: <code>${paymentKey}</code></p>` : ''}
+
+      <p id="sheetsStatus" style="
+        font-size:0.78rem;color:var(--text-muted);margin-top:20px;
+        font-style:italic;min-height:1.2em;
+      "></p>
     `;
+
+    /* 구글 시트 저장 실행 */
+    const statusEl = document.getElementById('sheetsStatus');
+    if (APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+      statusEl.textContent = '주문 정보 저장 중…';
+      saveToSheets(order, paymentKey, orderId, amount).then(result => {
+        statusEl.textContent = result === 'ok'
+          ? '✓ 주문 정보가 구글 시트에 저장되었습니다.'
+          : '주문 정보 저장에 실패했습니다. 관리자에게 문의해주세요.';
+      });
+    }
 
     /* 사용 완료된 주문 데이터 정리 */
     sessionStorage.removeItem('capsule_order');
