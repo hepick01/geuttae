@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/process-order.js": {
+      "maxDuration": 30
+    }
+  }
+}

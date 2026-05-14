@@ -166,15 +166,13 @@
   </footer>
 
   <script>
-    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
-
     /* ── URL 파라미터 (토스가 붙여줌) ── */
     var params     = new URLSearchParams(window.location.search);
     var paymentKey = params.get('paymentKey') || '';
     var orderId    = params.get('orderId')    || '';
     var amount     = Number(params.get('amount') || 50000);
 
-    /* ── sessionStorage에서 주문 데이터 로드 ── */
+    /* ── sessionStorage에서 주문 + 사진 로드 ── */
     var order  = {};
     var photos = [];
     try { order  = JSON.parse(sessionStorage.getItem('capsule_order')  || '{}'); } catch(e) {}
@@ -194,12 +192,10 @@
       deliveryYear = d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월경';
     }
 
-    var amountStr = '₩ ' + amount.toLocaleString();
-
     document.getElementById('detailBox').innerHTML =
       '<div class="order-detail-box">' +
         '<p class="order-detail-title">Order Details</p>' +
-        '<div class="detail-row"><span class="detail-label">결제 금액</span><span class="detail-value">' + amountStr + '</span></div>' +
+        '<div class="detail-row"><span class="detail-label">결제 금액</span><span class="detail-value">₩ ' + amount.toLocaleString() + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">주문 번호</span><span class="detail-value" style="font-family:monospace;font-size:0.78rem;">' + (orderId || '—') + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">받는 분</span><span class="detail-value">' + recipient + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">사진</span><span class="detail-value">' + photoCount + '</span></div>' +
@@ -215,16 +211,16 @@
         '<p><strong>' + timingLabel + '</strong>, 약속한 주소로 박스가 출발합니다.</p>' +
       '</div>';
 
-    /* ── Apps Script로 전체 주문 전송 (no-cors, fire-and-forget) ──
-       사진 + 주문정보를 한 번에 보냄. Apps Script가 드라이브 저장 + 시트 저장을 한 번에 처리. */
+    /* ── /api/process-order 호출 (같은 도메인 → CORS 없음, 응답 읽기 가능) ── */
+    var statusEl = document.getElementById('saveStatus');
+
     var payload = {
-      action:      'processOrder',
-      orderId:     orderId || (order.orderId || ''),
+      orderId:     orderId || order.orderId || '',
       paymentKey:  paymentKey,
       amount:      amount,
       recipient:   order.recipient    || '',
       phone:       order.phone        || '',
-      address:     [order.address, order.addressDetail].filter(function(x){ return x; }).join(' '),
+      address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
       timingLabel: order.timingLabel  || '',
       letter:      order.letter       || '',
       photoCount:  order.photoCount   || 0,
@@ -232,23 +228,32 @@
       photos:      photos
     };
 
-    var statusEl = document.getElementById('saveStatus');
-
-    fetch(APPS_SCRIPT_URL, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body:    JSON.stringify(payload)
-    }).then(function() {
-      statusEl.textContent = '✓ 주문 정보와 사진이 저장되었습니다.';
-    }).catch(function(err) {
-      console.error('[processOrder]', err);
-      statusEl.textContent = '';
-    });
-
-    /* sessionStorage 정리 */
+    /* sessionStorage는 요청 전에 정리 */
     sessionStorage.removeItem('capsule_order');
     sessionStorage.removeItem('capsule_photos');
+
+    fetch('/api/process-order', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload)
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        if (data.folderUrl) {
+          statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + data.folderUrl + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 폴더 보기 →</a>';
+        } else {
+          statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
+        }
+      } else {
+        statusEl.textContent = '저장 중 오류가 발생했습니다. 문의해주세요.';
+        console.error('process-order error:', data.error);
+      }
+    })
+    .catch(function(err) {
+      statusEl.textContent = '저장 중 오류가 발생했습니다. 문의해주세요.';
+      console.error('fetch error:', err);
+    });
   </script>
 
 </body>

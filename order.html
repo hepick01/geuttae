@@ -208,10 +208,10 @@
     };
 
     /* ── 사진 업로드 UI ── */
-    var photoZone    = document.getElementById('photoZone');
-    var photoInput   = document.getElementById('photoInput');
-    var photoPreview = document.getElementById('photoPreview');
-    var photoNote    = document.getElementById('photoCountNote');
+    var photoZone     = document.getElementById('photoZone');
+    var photoInput    = document.getElementById('photoInput');
+    var photoPreview  = document.getElementById('photoPreview');
+    var photoNote     = document.getElementById('photoCountNote');
     var uploadedFiles = [];
 
     photoZone.addEventListener('dragover', function(e) {
@@ -268,7 +268,7 @@
       return 'capsule-' + ts + '-' + rnd;
     }
 
-    /* ── 이미지 압축 (700px, JPEG 0.7) ── */
+    /* ── 이미지 압축 (600px, JPEG 0.7) ── */
     function compressImage(file) {
       return new Promise(function(resolve) {
         var reader = new FileReader();
@@ -277,7 +277,7 @@
           var img = new Image();
           img.onerror = function() { resolve(null); };
           img.onload = function() {
-            var MAX = 700;
+            var MAX = 600;
             var w = img.naturalWidth;
             var h = img.naturalHeight;
             if (w > MAX || h > MAX) {
@@ -321,8 +321,8 @@
 
       var orderId = generateOrderId();
 
-      /* 사진 압축 후 sessionStorage에 저장
-         success.html에서 읽어서 Apps Script로 전송 */
+      /* 사진 압축 → sessionStorage 저장
+         (success.html에서 /api/process-order로 전송) */
       var photos = [];
       if (uploadedFiles.length > 0) {
         btn.textContent = '사진 압축 중…';
@@ -331,8 +331,7 @@
         try {
           sessionStorage.setItem('capsule_photos', JSON.stringify(photos));
         } catch (storageErr) {
-          /* 용량 초과 시 사진 없이 진행 */
-          console.warn('사진 저장 실패 (용량 초과):', storageErr);
+          console.warn('sessionStorage 용량 초과, 사진 제외:', storageErr);
           sessionStorage.removeItem('capsule_photos');
           photos = [];
         }
@@ -340,18 +339,17 @@
         sessionStorage.removeItem('capsule_photos');
       }
 
-      /* 주문 정보 저장 */
       sessionStorage.setItem('capsule_order', JSON.stringify({
-        orderId:      orderId,
-        recipient:    recipient,
-        timing:       timingEl.value,
-        timingLabel:  TIMING_LABEL[timingEl.value],
-        address:      address,
+        orderId:       orderId,
+        recipient:     recipient,
+        timing:        timingEl.value,
+        timingLabel:   TIMING_LABEL[timingEl.value],
+        address:       address,
         addressDetail: addressDetail,
-        phone:        phone,
-        letter:       letter,
-        photoCount:   photos.length,
-        createdAt:    new Date().toISOString()
+        phone:         phone,
+        letter:        letter,
+        photoCount:    photos.length,
+        createdAt:     new Date().toISOString()
       }));
 
       var base = window.location.href.replace(/\/order\.html.*$/, '/');
