@@ -79,6 +79,7 @@
           </div>
           <div class="photo-preview-grid" id="photoPreview"></div>
           <p class="photo-count-note" id="photoCountNote"></p>
+          <div id="uploadErrorLog" style="margin-top:10px;font-size:0.8rem;color:#c0392b;font-family:monospace;white-space:pre-wrap;word-break:break-all;"></div>
         </div>
 
         <hr class="form-sep">
@@ -278,7 +279,7 @@
       newFiles.slice(0, remaining).forEach(function(file) {
         var id    = photoSeq++;
         var path  = orderId + '/photo_' + id + '.jpg';
-        var photo = { id: id, file: file, status: 'uploading', url: null, path: path };
+        var photo = { id: id, file: file, status: 'uploading', url: null, path: path, error: '' };
         photos.push(photo);
         renderPreviews();
 
@@ -294,6 +295,7 @@
           .catch(function(err) {
             console.error('[upload]', err);
             photo.status = 'error';
+            photo.error  = err.message || String(err);
             renderPreviews();
           });
       });
@@ -350,6 +352,12 @@
         photoPreview.appendChild(item);
       });
       photoNote.textContent = photos.length > 0 ? photos.length + '장 선택됨 (최대 20장)' : '';
+
+      var errLog = document.getElementById('uploadErrorLog');
+      var errLines = photos
+        .filter(function(p) { return p.status === 'error' && p.error; })
+        .map(function(p) { return '[photo_' + p.id + '] ' + p.error; });
+      errLog.textContent = errLines.join('\n');
     }
 
     /* ── 글자 수 ── */
