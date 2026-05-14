@@ -390,7 +390,7 @@
         createdAt:     new Date().toISOString()
       }));
 
-      var base = window.location.href.replace(/\/order\.html.*$/, '/');
+      var base = window.location.origin + '/';
       btn.textContent = '결제창 열는 중…';
 
       try {
