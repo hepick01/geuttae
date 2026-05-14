@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 완료 — 그때, 우리는</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .success-wrap {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+
+    .success-card {
+      max-width: 600px;
+      width: 100%;
+      background: var(--bg-light);
+      border: 1.5px solid var(--border);
+      padding: 64px 56px;
+      text-align: center;
+      position: relative;
+    }
+
+    .success-card::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(196, 160, 112, 0.4);
+      pointer-events: none;
+    }
+
+    .success-icon {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 24px;
+      filter: sepia(0.3);
+    }
+
+    .success-badge {
+      display: inline-block;
+      background: var(--brown-warm);
+      color: var(--white-warm);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 5px 22px;
+      margin-bottom: 24px;
+      transform: rotate(-1deg);
+      display: inline-block;
+    }
+
+    .success-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+      margin-bottom: 12px;
+    }
+
+    .success-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--brown-mid);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .order-detail-box {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-light);
+      padding: 28px 32px;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+
+    .order-detail-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(196, 160, 112, 0.2);
+      font-size: 0.9rem;
+    }
+
+    .detail-row:last-child { border-bottom: none; }
+
+    .detail-label {
+      color: var(--text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .detail-value {
+      color: var(--brown-dark);
+      font-weight: 600;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .next-steps {
+      background: rgba(122, 69, 37, 0.06);
+      border-left: 3px solid var(--brown-light);
+      padding: 20px 24px;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+
+    .next-steps p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 4px;
+    }
+
+    .next-steps p:last-child { margin-bottom: 0; }
+
+    .next-steps strong {
+      color: var(--brown-mid);
+      font-weight: 600;
+    }
+
+    /* 백엔드 확인 필요 안내 */
+    .confirm-notice {
+      background: rgba(158, 114, 5, 0.08);
+      border: 1px solid rgba(158, 114, 5, 0.25);
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+
+    .confirm-notice p {
+      font-size: 0.8rem;
+      color: var(--gold);
+      line-height: 1.75;
+    }
+
+    .confirm-notice code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      background: rgba(158, 114, 5, 0.1);
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    .btn-home {
+      display: inline-block;
+      background: var(--brown-mid);
+      color: var(--white-warm);
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.975rem;
+      letter-spacing: 0.08em;
+      padding: 15px 44px;
+      text-decoration: none;
+      border: 2px solid var(--brown-mid);
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+      font-weight: 600;
+    }
+
+    .btn-home::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255,255,255,0.15);
+      pointer-events: none;
+    }
+
+    .btn-home:hover {
+      background: var(--brown-dark);
+      border-color: var(--brown-dark);
+    }
+
+    .payment-key-row {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    .payment-key-row code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--brown-light);
+      word-break: break-all;
+    }
+
+    @media (max-width: 600px) {
+      .success-card { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">그때, 우리는</a>
+    </div>
+  </header>
+
+  <div class="success-wrap">
+    <div class="success-card" id="successCard">
+      <!-- JS로 채워짐 -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-brand">그때, 우리는</p>
+      <p>당신의 기억을 안전하게 보관합니다.</p>
+      <p class="footer-divider">· · ·</p>
+      <p>문의 &nbsp;|&nbsp; maejonam1397@gmail.com</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ─────────────────────────────────────────────
+       1. URL 파라미터 파싱 (토스페이먼츠가 붙여줌)
+          ?paymentKey=...&orderId=...&amount=...
+       ───────────────────────────────────────────── */
+    const params     = new URLSearchParams(window.location.search);
+    const paymentKey = params.get('paymentKey') || '';
+    const orderId    = params.get('orderId')    || '';
+    const amount     = Number(params.get('amount') || 0);
+
+    /* ─────────────────────────────────────────────
+       2. 주문 상세 정보 (sessionStorage)
+       ───────────────────────────────────────────── */
+    let order = {};
+    try {
+      order = JSON.parse(sessionStorage.getItem('capsule_order') || '{}');
+    } catch (_) {}
+
+    /* ─────────────────────────────────────────────
+       3. 백엔드 결제 승인 요청
+          실제 운영 시 반드시 서버에서 수행해야 합니다.
+          아래는 흐름 이해를 위한 예시 코드입니다.
+
+          await fetch('/api/confirm-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentKey, orderId, amount }),
+          });
+
+          서버에서는:
+          POST https://api.tosspayments.com/v1/payments/confirm
+          Authorization: Basic base64(시크릿키 + ':')
+          { paymentKey, orderId, amount }
+       ───────────────────────────────────────────── */
+
+    /* ─────────────────────────────────────────────
+       4. UI 렌더링
+       ───────────────────────────────────────────── */
+    const card = document.getElementById('successCard');
+
+    const timingLabel = order.timingLabel || '—';
+    const recipient   = order.recipient   || '—';
+    const email       = order.email       || '—';
+    const photoCount  = order.photoCount  != null ? `${order.photoCount}장` : '—';
+
+    /* 예상 발송일 계산 */
+    let deliveryYear = '—';
+    if (order.createdAt && order.timing) {
+      const d = new Date(order.createdAt);
+      const addYears = { '1year': 1, '3years': 3, '5years': 5, '10years': 10 };
+      d.setFullYear(d.getFullYear() + (addYears[order.timing] || 0));
+      deliveryYear = `${d.getFullYear()}년 ${d.getMonth() + 1}월경`;
+    }
+
+    const amountFormatted = amount
+      ? `₩ ${amount.toLocaleString()}`
+      : '₩ 50,000';
+
+    card.innerHTML = `
+      <span class="success-icon">📬</span>
+      <div class="success-badge">Payment Complete</div>
+
+      <h1 class="success-title">결제가 완료되었습니다</h1>
+      <p class="success-sub">
+        당신의 타임캡슐이 봉인되었습니다.<br>
+        정해진 그날, 문 앞에 도착할 거예요.
+      </p>
+
+      <div class="order-detail-box">
+        <p class="order-detail-title">Order Details</p>
+
+        <div class="detail-row">
+          <span class="detail-label">결제 금액</span>
+          <span class="detail-value">${amountFormatted}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">주문 번호</span>
+          <span class="detail-value" style="font-family:monospace;font-size:0.78rem;">${orderId || '—'}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">받는 분</span>
+          <span class="detail-value">${recipient}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">사진</span>
+          <span class="detail-value">${photoCount}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">발송 시기</span>
+          <span class="detail-value">${timingLabel}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">예상 발송</span>
+          <span class="detail-value">${deliveryYear}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">확인 이메일</span>
+          <span class="detail-value">${email}</span>
+        </div>
+      </div>
+
+      <div class="next-steps">
+        <p>📌 <strong>다음 단계</strong></p>
+        <p>입력하신 이메일로 주문 확인서가 발송됩니다.</p>
+        <p>저희가 사진을 인화하고 편지를 손으로 엮어 크라프트 박스에 담겠습니다.</p>
+        <p><strong>${timingLabel}</strong>, 약속한 주소로 박스가 출발합니다.</p>
+      </div>
+
+      <div class="confirm-notice">
+        <p>
+          ⚠️ <strong>개발자 안내 (운영 전 필수)</strong><br>
+          실 결제 처리를 위해 서버에서 결제 승인 API를 호출해야 합니다.<br>
+          <code>POST https://api.tosspayments.com/v1/payments/confirm</code><br>
+          <code>{ paymentKey, orderId, amount }</code> — 시크릿 키는 반드시 서버에서만 사용하세요.
+        </p>
+      </div>
+
+      <a href="index.html" class="btn-home">메인으로 돌아가기</a>
+
+      ${paymentKey ? `<p class="payment-key-row">paymentKey: <code>${paymentKey}</code></p>` : ''}
+    `;
+
+    /* 사용 완료된 주문 데이터 정리 */
+    sessionStorage.removeItem('capsule_order');
+  </script>
+
+</body>
+</html>

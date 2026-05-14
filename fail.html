@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 실패 — 그때, 우리는</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .fail-wrap {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+    }
+
+    .fail-card {
+      max-width: 520px;
+      width: 100%;
+      background: var(--bg-light);
+      border: 1.5px solid var(--border);
+      padding: 64px 56px;
+      text-align: center;
+      position: relative;
+    }
+
+    .fail-card::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(196, 160, 112, 0.4);
+      pointer-events: none;
+    }
+
+    .fail-icon {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 24px;
+      filter: sepia(0.4);
+    }
+
+    .fail-badge {
+      display: inline-block;
+      background: rgba(160, 98, 42, 0.5);
+      color: var(--white-warm);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 5px 22px;
+      margin-bottom: 24px;
+      transform: rotate(-1deg);
+      display: inline-block;
+    }
+
+    .fail-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+      margin-bottom: 12px;
+    }
+
+    .fail-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .error-box {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-light);
+      padding: 20px 24px;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+
+    .error-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 8px 0;
+      font-size: 0.875rem;
+      border-bottom: 1px solid rgba(196, 160, 112, 0.2);
+    }
+
+    .error-row:last-child { border-bottom: none; }
+
+    .error-label { color: var(--text-muted); flex-shrink: 0; white-space: nowrap; }
+    .error-value { color: var(--brown-dark); font-weight: 600; word-break: break-word; }
+
+    .btn-retry {
+      display: inline-block;
+      background: var(--brown-mid);
+      color: var(--white-warm);
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.975rem;
+      letter-spacing: 0.08em;
+      padding: 15px 44px;
+      text-decoration: none;
+      border: 2px solid var(--brown-mid);
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .btn-retry::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255,255,255,0.15);
+      pointer-events: none;
+    }
+
+    .btn-retry:hover {
+      background: var(--brown-dark);
+      border-color: var(--brown-dark);
+    }
+
+    .btn-home-link {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    .btn-home-link:hover { color: var(--brown-mid); }
+
+    @media (max-width: 600px) {
+      .fail-card { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="site-logo">그때, 우리는</a>
+    </div>
+  </header>
+
+  <div class="fail-wrap">
+    <div class="fail-card" id="failCard">
+      <!-- JS로 채워짐 -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-brand">그때, 우리는</p>
+      <p>당신의 기억을 안전하게 보관합니다.</p>
+      <p class="footer-divider">· · ·</p>
+      <p>문의 &nbsp;|&nbsp; maejonam1397@gmail.com</p>
+    </div>
+  </footer>
+
+  <script>
+    /* 토스페이먼츠 실패 리다이렉트 파라미터
+       ?code=...&message=...&orderId=... */
+    const params  = new URLSearchParams(window.location.search);
+    const code    = params.get('code')    || '';
+    const message = params.get('message') || '결제가 완료되지 않았습니다.';
+    const orderId = params.get('orderId') || '';
+
+    /* 에러 코드별 사용자 안내 메시지 */
+    const errorGuide = {
+      'REJECT_CARD_COMPANY':   '카드사에서 결제를 거절했습니다. 다른 카드를 사용해보세요.',
+      'INVALID_CARD_EXPIRATION': '카드 유효기간을 다시 확인해주세요.',
+      'INVALID_STOPPED_CARD':  '사용이 정지된 카드입니다.',
+      'EXCEED_MAX_DAILY_PAYMENT_COUNT': '오늘 결제 한도를 초과했습니다.',
+      'NOT_SUPPORTED_INSTALLMENT_PLAN_CARD_OR_MERCHANT': '해당 카드는 할부 결제를 지원하지 않습니다.',
+      'EXCEED_MAX_PAYMENT_AMOUNT': '1회 결제 한도를 초과했습니다.',
+      'INVALID_CARD_INSTALLMENT_PLAN': '선택한 할부 개월 수가 유효하지 않습니다.',
+    };
+
+    const guide = errorGuide[code] || '잠시 후 다시 시도해주세요. 문제가 지속되면 문의해주세요.';
+
+    const card = document.getElementById('failCard');
+    card.innerHTML = `
+      <span class="fail-icon">✉️</span>
+      <div class="fail-badge">Payment Failed</div>
+
+      <h1 class="fail-title">결제가 완료되지 않았습니다</h1>
+      <p class="fail-sub">
+        걱정하지 마세요. 타임캡슐은 아직 기다리고 있어요.<br>
+        아래 내용을 확인하고 다시 시도해주세요.
+      </p>
+
+      <div class="error-box">
+        ${code ? `
+        <div class="error-row">
+          <span class="error-label">오류 코드</span>
+          <span class="error-value" style="font-family:monospace;font-size:0.78rem;">${code}</span>
+        </div>` : ''}
+        <div class="error-row">
+          <span class="error-label">내용</span>
+          <span class="error-value">${message}</span>
+        </div>
+        <div class="error-row">
+          <span class="error-label">안내</span>
+          <span class="error-value">${guide}</span>
+        </div>
+        ${orderId ? `
+        <div class="error-row">
+          <span class="error-label">주문 번호</span>
+          <span class="error-value" style="font-family:monospace;font-size:0.78rem;">${orderId}</span>
+        </div>` : ''}
+      </div>
+
+      <a href="order.html" class="btn-retry">다시 결제하기</a>
+      <a href="index.html" class="btn-home-link">메인으로 돌아가기</a>
+    `;
+  </script>
+
+</body>
+</html>
