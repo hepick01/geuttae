@@ -170,33 +170,35 @@
 
     var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
 
-    /* ── URL 파라미터 (토스가 붙여줌) ── */
+    /* ── 1. Toss URL 파라미터 ── */
     var params     = new URLSearchParams(window.location.search);
     var paymentKey = params.get('paymentKey') || '';
     var orderId    = params.get('orderId')    || '';
     var amount     = Number(params.get('amount') || 50000);
 
-    /* ── localStorage에서 주문 데이터 + 사진 URL 로드 ── */
+    /* ── 2. localStorage 읽기 ── */
     var order     = {};
     var photoUrls = [];
     try { order     = JSON.parse(localStorage.getItem('capsule_order')      || '{}'); } catch(e) {}
     try { photoUrls = JSON.parse(localStorage.getItem('capsule_photo_urls') || '[]'); } catch(e) {}
-
     localStorage.removeItem('capsule_order');
     localStorage.removeItem('capsule_photo_urls');
 
-    /* ── UI 렌더링 ── */
-    var timingLabel = order.timingLabel || '—';
-    var recipient   = order.recipient   || '—';
-    var phone       = order.phone       || '—';
-    var photoCount  = (order.photoCount != null) ? order.photoCount + '장' : '—';
+    console.log('localStorage order:', JSON.stringify(order));
+
+    /* ── 3. UI 렌더링 ── */
+    var timingLabel  = order.timingLabel || '—';
+    var recipient    = order.recipient   || '—';
+    var phone        = order.phone       || '—';
+    var music        = order.music       || '';
+    var photoCountTx = order.photoCount != null ? order.photoCount + '장' : '—';
 
     var deliveryYear = '—';
     if (order.createdAt && order.timing) {
-      var d = new Date(order.createdAt);
-      var add = { '1year': 1, '3years': 3, '5years': 5, '10years': 10 };
-      d.setFullYear(d.getFullYear() + (add[order.timing] || 0));
-      deliveryYear = d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월경';
+      var dt  = new Date(order.createdAt);
+      var yrs = { '1year': 1, '3years': 3, '5years': 5, '10years': 10 };
+      dt.setFullYear(dt.getFullYear() + (yrs[order.timing] || 0));
+      deliveryYear = dt.getFullYear() + '년 ' + (dt.getMonth() + 1) + '월경';
     }
 
     document.getElementById('detailBox').innerHTML =
@@ -205,7 +207,8 @@
         '<div class="detail-row"><span class="detail-label">결제 금액</span><span class="detail-value">₩ ' + amount.toLocaleString() + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">주문 번호</span><span class="detail-value" style="font-family:monospace;font-size:0.78rem;">' + (orderId || '—') + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">받는 분</span><span class="detail-value">' + recipient + '</span></div>' +
-        '<div class="detail-row"><span class="detail-label">사진</span><span class="detail-value">' + photoCount + '</span></div>' +
+        '<div class="detail-row"><span class="detail-label">사진</span><span class="detail-value">' + photoCountTx + '</span></div>' +
+        (music ? '<div class="detail-row"><span class="detail-label">노래</span><span class="detail-value">' + music + '</span></div>' : '') +
         '<div class="detail-row"><span class="detail-label">발송 시기</span><span class="detail-value">' + timingLabel + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">예상 발송</span><span class="detail-value">' + deliveryYear + '</span></div>' +
         '<div class="detail-row"><span class="detail-label">전화번호</span><span class="detail-value">' + phone + '</span></div>' +
@@ -218,7 +221,7 @@
         '<p><strong>' + timingLabel + '</strong>, 약속한 주소로 박스가 출발합니다.</p>' +
       '</div>';
 
-    /* ── 구글 시트 저장 (Apps Script, no-cors) ── */
+    /* ── 4. Apps Script 전송 (시트 컬럼 순서와 동일) ── */
     var statusEl    = document.getElementById('saveStatus');
     var photoFolder = photoUrls.length > 0 ? photoUrls[0].replace(/\/photo_\d+\.jpg$/, '/') : '';
 
@@ -243,7 +246,7 @@
       method:  'POST',
       mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(payload)
     }).then(function() {
       if (photoUrls.length > 0) {
         statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + photoUrls[0] + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 확인 →</a>';
@@ -252,7 +255,7 @@
       }
     }).catch(function(err) {
       console.error('[saveOrder]', err);
-      statusEl.textContent = '';
+      statusEl.textContent = '저장 중 오류가 발생했습니다.';
     });
   </script>
 
