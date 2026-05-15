@@ -226,9 +226,6 @@
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action:      'processOrder',
-        orderId:     orderId || order.orderId || '',
-        amount:      amount,
-        paymentDate: new Date().toLocaleString('ko-KR'),
         recipient:   order.recipient   || '',
         phone:       order.phone       || '',
         address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
@@ -236,6 +233,9 @@
         letter:      order.letter      || '',
         music:       order.music       || '',
         photoCount:  order.photoCount  || 0,
+        paymentDate: new Date().toLocaleString('ko-KR'),
+        orderId:     orderId || order.orderId || '',
+        amount:      amount,
         folderUrl:   photoFolder,
         paymentKey:  paymentKey
       })
