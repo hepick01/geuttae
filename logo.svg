@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="110" viewBox="0 0 400 110">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400&amp;family=Noto+Serif+KR:wght@600&amp;display=swap');
+      .ko  { font-family: 'Noto Serif KR', 'Apple SD Gothic Neo', 'Malgun Gothic', serif;
+             font-size: 48px; font-weight: 600; fill: #FFFFFF; }
+      .en  { font-family: 'Cormorant Garamond', 'Georgia', serif;
+             font-size: 11.5px; font-weight: 400; fill: #FFFFFF;
+             letter-spacing: 0.38em; }
+      .line { stroke: #FFFFFF; stroke-width: 0.8; opacity: 0.5; }
+    </style>
+  </defs>
+
+  <!-- Korean title -->
+  <text x="200" y="60" class="ko" text-anchor="middle">그때, 우리는</text>
+
+  <!-- Thin divider -->
+  <line x1="148" y1="72" x2="252" y2="72" class="line"/>
+
+  <!-- English subtitle -->
+  <text x="204" y="91" class="en" text-anchor="middle">TIME CAPSULE</text>
+</svg>
