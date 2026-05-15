@@ -227,8 +227,8 @@
       body: JSON.stringify({
         action:      'processOrder',
         orderId:     orderId || order.orderId || '',
-        paymentKey:  paymentKey,
         amount:      amount,
+        paymentDate: new Date().toLocaleString('ko-KR'),
         recipient:   order.recipient   || '',
         phone:       order.phone       || '',
         address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
@@ -236,8 +236,8 @@
         letter:      order.letter      || '',
         music:       order.music       || '',
         photoCount:  order.photoCount  || 0,
-        paymentDate: new Date().toLocaleString('ko-KR'),
-        folderUrl:   photoFolder
+        folderUrl:   photoFolder,
+        paymentKey:  paymentKey
       })
     }).then(function() {
       if (photoUrls.length > 0) {
