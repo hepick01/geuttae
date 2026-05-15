@@ -166,6 +166,8 @@
   </footer>
 
   <script>
+    console.log('success 페이지 로드됨');
+
     var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOmV8vJASsAK8cUUpptDW12xNq4_XB_QsCUXlnjRfINHSDnrrvJ-W1doGyn5p0JfjrGA/exec';
 
     /* ── URL 파라미터 (토스가 붙여줌) ── */
@@ -220,25 +222,28 @@
     var statusEl    = document.getElementById('saveStatus');
     var photoFolder = photoUrls.length > 0 ? photoUrls[0].replace(/\/photo_\d+\.jpg$/, '/') : '';
 
+    var payload = {
+      action:      'processOrder',
+      recipient:   order.recipient   || '',
+      phone:       order.phone       || '',
+      address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
+      timingLabel: order.timingLabel || '',
+      letter:      order.letter      || '',
+      music:       order.music       || '',
+      photoCount:  order.photoCount  || 0,
+      paymentDate: new Date().toLocaleString('ko-KR'),
+      orderId:     orderId || order.orderId || '',
+      amount:      amount,
+      folderUrl:   photoFolder,
+      paymentKey:  paymentKey
+    };
+    console.log('전송 데이터:', JSON.stringify(payload));
+
     fetch(APPS_SCRIPT_URL, {
       method:  'POST',
       mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action:      'processOrder',
-        recipient:   order.recipient   || '',
-        phone:       order.phone       || '',
-        address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
-        timingLabel: order.timingLabel || '',
-        letter:      order.letter      || '',
-        music:       order.music       || '',
-        photoCount:  order.photoCount  || 0,
-        paymentDate: new Date().toLocaleString('ko-KR'),
-        orderId:     orderId || order.orderId || '',
-        amount:      amount,
-        folderUrl:   photoFolder,
-        paymentKey:  paymentKey
-      })
+      body: JSON.stringify(payload)
     }).then(function() {
       if (photoUrls.length > 0) {
         statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + photoUrls[0] + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 확인 →</a>';
