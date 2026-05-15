@@ -103,10 +103,24 @@
 
         <hr class="form-sep">
 
-        <!-- 03. 받는 사람 -->
+        <!-- 03. 그때 우리의 노래 -->
+        <div class="form-group">
+          <label class="form-label" for="music">
+            <span class="label-num">03</span>
+            그때 우리의 노래
+            <span class="label-hint">가수명 + 노래 제목 예: 아이유 - 좋은 날</span>
+          </label>
+          <input type="text" id="music" name="music" class="form-input"
+            placeholder="가수명 + 노래 제목  예: 아이유 - 좋은 날">
+          <p class="upload-sub" style="margin-top:8px;">10년 뒤 박스와 함께 전달해드릴게요 🎵</p>
+        </div>
+
+        <hr class="form-sep">
+
+        <!-- 04. 받는 사람 -->
         <div class="form-group">
           <label class="form-label" for="recipient">
-            <span class="label-num">03</span>
+            <span class="label-num">04</span>
             받는 사람 이름
             <span class="label-hint">박스 겉면에 인쇄됩니다</span>
           </label>
@@ -116,10 +130,10 @@
 
         <hr class="form-sep">
 
-        <!-- 04. 발송 시기 -->
+        <!-- 05. 발송 시기 -->
         <div class="form-group">
           <p class="form-label" style="cursor:default;">
-            <span class="label-num">04</span>
+            <span class="label-num">05</span>
             발송 시기 선택
             <span class="label-hint">주문일로부터</span>
           </p>
@@ -157,10 +171,10 @@
 
         <hr class="form-sep">
 
-        <!-- 05. 주소 -->
+        <!-- 06. 주소 -->
         <div class="form-group">
           <label class="form-label" for="address">
-            <span class="label-num">05</span>
+            <span class="label-num">06</span>
             받을 주소
             <span class="label-hint">정해진 날짜에 이 주소로 배송</span>
           </label>
@@ -172,10 +186,10 @@
 
         <hr class="form-sep">
 
-        <!-- 06. 전화번호 -->
+        <!-- 07. 전화번호 -->
         <div class="form-group">
           <label class="form-label" for="phone">
-            <span class="label-num">06</span>
+            <span class="label-num">07</span>
             주문자 전화번호
             <span class="label-hint">주문 확인 및 발송 안내</span>
           </label>
@@ -433,6 +447,7 @@
       var addressDetail = document.getElementById('addressDetail').value.trim();
       var phone         = document.getElementById('phone').value.trim();
       var letter        = letterEl.value;
+      var music         = document.getElementById('music').value.trim();
 
       if (!recipient) { alert('받는 사람 이름을 입력해주세요.'); document.getElementById('recipient').focus(); return; }
       if (!address)   { alert('받을 주소를 입력해주세요.');       document.getElementById('address').focus();   return; }
@@ -461,6 +476,7 @@
         addressDetail: addressDetail,
         phone:         phone,
         letter:        letter,
+        music:         music,
         photoCount:    photoUrls.length,
         createdAt:     new Date().toISOString()
       }));

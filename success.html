@@ -234,6 +234,7 @@
         address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
         timingLabel: order.timingLabel || '',
         letter:      order.letter      || '',
+        music:       order.music       || '',
         photoCount:  order.photoCount  || 0,
         paymentDate: new Date().toLocaleString('ko-KR'),
         folderUrl:   photoFolder
