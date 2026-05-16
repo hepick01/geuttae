@@ -204,7 +204,7 @@
           <p class="summary-title">Order Summary</p>
           <div class="summary-row">
             <span>타임캡슐 패키지</span>
-            <span>₩ 50,000</span>
+            <span>₩ 55,000</span>
           </div>
           <div class="summary-row">
             <span>사진 인화 + 제본 + 패키징</span>
@@ -216,12 +216,12 @@
           </div>
           <div class="summary-row total">
             <span>합계</span>
-            <span>₩ 50,000</span>
+            <span>₩ 55,000</span>
           </div>
         </div>
 
         <button type="submit" class="payment-btn">
-          결제하기 &nbsp;—&nbsp; ₩ 50,000
+          결제하기 &nbsp;—&nbsp; ₩ 55,000
         </button>
 
         <p class="form-notice">
@@ -487,7 +487,7 @@
       try {
         var tossPayments = TossPayments(TOSS_CLIENT_KEY);
         await tossPayments.requestPayment('카드', {
-          amount:              50000,
+          amount:              55000,
           orderId:             orderId,
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
@@ -497,7 +497,7 @@
         });
       } catch (err) {
         btn.disabled    = false;
-        btn.textContent = '결제하기 — ₩ 50,000';
+        btn.textContent = '결제하기 — ₩ 55,000';
         if (err.code === 'USER_CANCEL') return;
         console.error('[Toss]', err);
         alert('결제 중 오류가 발생했습니다.\n\n' + err.message);
