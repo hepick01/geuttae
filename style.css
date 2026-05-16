@@ -900,6 +900,66 @@ body::before {
   .timing-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 768px) {
+  /* HOW IT WORKS — 세 카드가 한 화면에 들어오도록 컴팩트하게 */
+  .how-section {
+    padding: 24px 0 20px;
+  }
+
+  .how-section .section-eyebrow {
+    margin-bottom: 4px;
+  }
+
+  .how-section .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+
+  .how-section .ornament {
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+  }
+
+  .step-card {
+    padding: 10px 16px;
+    max-width: 100%;
+  }
+
+  .step-card::after {
+    inset: 4px;
+  }
+
+  .step-num {
+    font-size: 1.6rem;
+    margin-bottom: 2px;
+  }
+
+  .step-icon {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .step-card h3 {
+    font-size: 0.82rem;
+    margin-bottom: 3px;
+  }
+
+  .step-card p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  /* <br> 숨겨서 단락이 자연스럽게 흐르도록 → 4줄 → 약 2줄로 높이 절약 */
+  .step-card p br {
+    display: none;
+  }
+
+  .step-arrow {
+    height: 14px;
+  }
+}
+
 @media (max-width: 600px) {
   .container { padding: 0 20px; }
   .hero-title { font-size: clamp(3.2rem, 14vw, 5rem); }
