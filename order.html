@@ -485,6 +485,13 @@
         createdAt:     new Date().toISOString()
       }));
 
+      if (typeof loadTossPayments === 'undefined') {
+        await new Promise(function(resolve) {
+          var script = document.querySelector('script[src*="tosspayments"]');
+          script.addEventListener('load', resolve);
+        });
+      }
+
       try {
         /* v2 SDK: loadTossPayments → payment({ customerKey }) → requestPayment */
         var tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
