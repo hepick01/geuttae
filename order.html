@@ -469,9 +469,11 @@
         .filter(function(p) { return p.status === 'done'; })
         .map(function(p) { return p.url; });
 
+      var paymentId = generateOrderId(); /* 매 결제 시도마다 새 ID — Toss 중복 오류 방지 */
+
       localStorage.setItem('capsule_photo_urls', JSON.stringify(photoUrls));
       localStorage.setItem('capsule_order', JSON.stringify({
-        orderId:       orderId,
+        orderId:       paymentId,
         recipient:     recipient,
         timing:        timingEl.value,
         timingLabel:   TIMING_LABEL[timingEl.value],
@@ -488,10 +490,10 @@
         var tossPayments = TossPayments(TOSS_CLIENT_KEY);
         await tossPayments.requestPayment('카드', {
           amount:              55000,
-          orderId:             orderId,
+          orderId:             paymentId,
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
-          customerMobilePhone: phone,
+          customerMobilePhone: phone.replace(/[^0-9]/g, ''), /* 하이픈 제거 — Toss 숫자만 허용 */
           successUrl:          _baseUrl + 'success.html',
           failUrl:             _baseUrl + 'fail.html'
         });
