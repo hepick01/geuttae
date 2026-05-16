@@ -495,19 +495,11 @@ body::before {
 
 /* ---- REFUND NOTE ---- */
 .refund-note {
-  text-align: center;
-  padding: 18px 24px;
-  background: var(--bg);
-  border-top: 1px solid rgba(192, 168, 130, 0.2);
-}
-
-.refund-note p {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 0.8rem;
+  font-size: 11px;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
-  opacity: 0.75;
+  opacity: 0.55;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
 }
 
 /* ---- FOOTER ---- */
