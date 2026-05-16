@@ -484,11 +484,11 @@
       try {
         var tossPayments = TossPayments(TOSS_CLIENT_KEY);
         await tossPayments.requestPayment('카드', {
-          amount:              50000,
+          amount:              55000,
           orderId:             orderId,
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
-          customerMobilePhone: phone,
+          customerMobilePhone: phone.replace(/[^0-9]/g, ''),
           successUrl:          'https://hepick01.github.io/geuttae/success.html',
           failUrl:             'https://hepick01.github.io/geuttae/fail.html'
         });
