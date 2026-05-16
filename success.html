@@ -243,11 +243,10 @@
     };
     console.log('[payload]', payload);
 
-    fetch(APPS_SCRIPT_URL, {
-      method:   'POST',
-      mode:     'no-cors',
-      redirect: 'follow',
-      body:     JSON.stringify(payload)
+    fetch('https://script.google.com/macros/s/AKfycbx6gtDpWTUbpR4A_4cdGG5hN68fQ84Zz7ZCUbocXwTxYN3wFoZRCJja67IJNpY1GI2U/exec', {
+      method: 'POST',
+      mode:   'no-cors',
+      body:   JSON.stringify(payload)
     });
     statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
