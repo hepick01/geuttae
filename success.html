@@ -243,25 +243,10 @@
     };
     console.log('[payload]', payload);
 
-    var qs = new URLSearchParams({
-      action:      payload.action,
-      recipient:   payload.recipient,
-      phone:       payload.phone,
-      address:     payload.address,
-      timingLabel: payload.timingLabel,
-      letter:      payload.letter,
-      music:       payload.music,
-      photoCount:  payload.photoCount,
-      paymentDate: payload.paymentDate,
-      orderId:     payload.orderId,
-      amount:      payload.amount,
-      paymentKey:  payload.paymentKey
-    });
-
-    fetch(APPS_SCRIPT_URL + '?' + qs.toString(), {
-      method: 'GET',
-      mode:   'no-cors'
-    });
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', APPS_SCRIPT_URL, true);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.send(JSON.stringify(payload));
     statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
 
