@@ -256,6 +256,9 @@
       '10years': '10년 후'
     };
 
+    /* ── 현재 호스팅 기반 콜백 URL 자동 생성 ── */
+    var _baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
+
     /* ── 페이지 로드 시 orderId 미리 생성 ── */
     function generateOrderId() {
       return 'capsule-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 8);
@@ -489,8 +492,8 @@
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
           customerMobilePhone: phone,
-          successUrl:          'https://hepick01.github.io/geuttae/success.html',
-          failUrl:             'https://hepick01.github.io/geuttae/fail.html'
+          successUrl:          _baseUrl + 'success.html',
+          failUrl:             _baseUrl + 'fail.html'
         });
       } catch (err) {
         btn.disabled    = false;
