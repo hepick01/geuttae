@@ -174,7 +174,7 @@
     var params     = new URLSearchParams(window.location.search);
     var paymentKey = params.get('paymentKey') || '';
     var orderId    = params.get('orderId')    || '';
-    var amount     = Number(params.get('amount') || 55000);
+    var amount     = Number(params.get('amount') || 50000);
 
     /* ── 2. localStorage 읽기 ── */
     var order     = {};
@@ -221,17 +221,12 @@
         '<p><strong>' + timingLabel + '</strong>, 약속한 주소로 박스가 출발합니다.</p>' +
       '</div>';
 
-    /* ── 4. Apps Script 전송
-          paymentKey 포함 → Apps Script 측에서 Toss confirm API 호출 후 시트 저장
-          mode: no-cors 제거 → Apps Script 응답 수신 가능 (GitHub Pages 클라이언트 전용 유지) ── */
+    /* ── 4. Apps Script 전송 (시트 컬럼 순서와 동일) ── */
     var statusEl    = document.getElementById('saveStatus');
     var photoFolder = photoUrls.length > 0 ? photoUrls[0].replace(/\/photo_\d+\.jpg$/, '/') : '';
 
     var payload = {
       action:      'processOrder',
-      paymentKey:  paymentKey,
-      orderId:     orderId || order.orderId || '',
-      amount:      amount,
       recipient:   order.recipient   || '',
       phone:       order.phone       || '',
       address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
@@ -240,16 +235,28 @@
       music:       order.music       || '',
       photoCount:  order.photoCount  || 0,
       paymentDate: new Date().toLocaleString('ko-KR'),
-      folderUrl:   photoFolder
+      orderId:     orderId || order.orderId || '',
+      amount:      amount,
+      folderUrl:   photoFolder,
+      paymentKey:  paymentKey
     };
+    console.log('전송 데이터:', JSON.stringify(payload));
 
     fetch(APPS_SCRIPT_URL, {
       method:  'POST',
       mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body:    JSON.stringify(payload)
+    }).then(function() {
+      if (photoUrls.length > 0) {
+        statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + photoUrls[0] + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 확인 →</a>';
+      } else {
+        statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
+      }
+    }).catch(function(err) {
+      console.error('[saveOrder]', err);
+      statusEl.textContent = '저장 중 오류가 발생했습니다.';
     });
-    statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
 
 </body>
