@@ -175,6 +175,7 @@
     var paymentKey = params.get('paymentKey') || '';
     var orderId    = params.get('orderId')    || '';
     var amount     = Number(params.get('amount') || 50000);
+    console.log('[URL params]', { paymentKey: paymentKey, orderId: orderId, amount: amount });
 
     /* ── 2. localStorage 읽기 ── */
     var order     = {};
