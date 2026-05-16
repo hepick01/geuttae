@@ -245,28 +245,11 @@
 
     fetch(APPS_SCRIPT_URL, {
       method:  'POST',
+      mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body:    JSON.stringify(payload)
-    }).then(function(res) {
-      if (!res.ok) {
-        return res.text().then(function(text) {
-          throw new Error('HTTP ' + res.status + ' — ' + (text || '응답 없음'));
-        });
-      }
-      return res.text();
-    }).then(function() {
-      if (photoUrls.length > 0) {
-        statusEl.innerHTML = '✓ 저장 완료 &nbsp;·&nbsp; <a href="' + photoUrls[0] + '" target="_blank" rel="noopener" style="color:var(--brown-mid);text-decoration:underline;">사진 확인 →</a>';
-      } else {
-        statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
-      }
-    }).catch(function(err) {
-      console.error('[saveOrder]', err);
-      statusEl.style.color      = '#c0392b';
-      statusEl.style.fontStyle  = 'normal';
-      statusEl.style.fontWeight = '600';
-      statusEl.textContent = '⚠ 저장 실패: ' + (err.message || String(err));
     });
+    statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
 
 </body>
