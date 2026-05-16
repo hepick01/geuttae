@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://js.tosspayments.com/v1"></script>
+  <script src="https://js.tosspayments.com/v2/base"></script>
   <style>
     .preview-item { position: relative; overflow: hidden; }
     .preview-overlay {
@@ -487,13 +487,16 @@
       }));
 
       try {
-        var tossPayments = TossPayments(TOSS_CLIENT_KEY);
-        await tossPayments.requestPayment('카드', {
-          amount:              55000,
+        /* v2 SDK: loadTossPayments → payment({ customerKey }) → requestPayment */
+        var tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+        var payment      = tossPayments.payment({ customerKey: paymentId });
+        await payment.requestPayment({
+          method:  'CARD',
+          amount:  { currency: 'KRW', value: 55000 },
           orderId:             paymentId,
           orderName:           '그때, 우리는 타임캡슐',
           customerName:        recipient,
-          customerMobilePhone: phone.replace(/[^0-9]/g, ''), /* 하이픈 제거 — Toss 숫자만 허용 */
+          customerMobilePhone: phone.replace(/[^0-9]/g, ''),
           successUrl:          _baseUrl + 'success.html',
           failUrl:             _baseUrl + 'fail.html'
         });
