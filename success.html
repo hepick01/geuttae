@@ -244,9 +244,10 @@
     console.log('[payload]', payload);
 
     fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode:   'no-cors',
-      body:   JSON.stringify(payload)
+      method:   'POST',
+      mode:     'no-cors',
+      redirect: 'follow',
+      body:     JSON.stringify(payload)
     });
     statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
