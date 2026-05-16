@@ -243,10 +243,24 @@
     };
     console.log('[payload]', payload);
 
-    fetch('https://script.google.com/macros/s/AKfycbx6gtDpWTUbpR4A_4cdGG5hN68fQ84Zz7ZCUbocXwTxYN3wFoZRCJja67IJNpY1GI2U/exec', {
-      method: 'POST',
-      mode:   'no-cors',
-      body:   JSON.stringify(payload)
+    var qs = new URLSearchParams({
+      action:      payload.action,
+      recipient:   payload.recipient,
+      phone:       payload.phone,
+      address:     payload.address,
+      timingLabel: payload.timingLabel,
+      letter:      payload.letter,
+      music:       payload.music,
+      photoCount:  payload.photoCount,
+      paymentDate: payload.paymentDate,
+      orderId:     payload.orderId,
+      amount:      payload.amount,
+      paymentKey:  payload.paymentKey
+    });
+
+    fetch(APPS_SCRIPT_URL + '?' + qs.toString(), {
+      method: 'GET',
+      mode:   'no-cors'
     });
     statusEl.textContent = '✓ 주문 정보가 저장되었습니다.';
   </script>
