@@ -484,6 +484,7 @@
       /* Toss v1은 성공 시 JS 콜백 없이 리다이렉트하므로 requestPayment 직전에 전송 */
       var _xhrPayload = {
         action:      'processOrder',
+        secret:      'geuttae_2024_secret',
         recipient:   recipient,
         phone:       phone,
         address:     [address, addressDetail].filter(Boolean).join(' '),

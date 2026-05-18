@@ -231,6 +231,7 @@
 
     var payload = {
       action:      'processOrder',
+      secret:      'geuttae_2024_secret',
       recipient:   order.recipient   || '',
       phone:       order.phone       || '',
       address:     [order.address, order.addressDetail].filter(Boolean).join(' '),
