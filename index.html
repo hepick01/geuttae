@@ -8,99 +8,412 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:#ede7d4;font-family:'Noto Serif KR',serif;color:#3d2510;overflow-x:hidden}
-.eyebrow{display:block;text-align:center;font-family:'Noto Sans KR',sans-serif;font-size:9px;font-weight:300;letter-spacing:.3em;color:rgba(61,37,16,0.38);margin-bottom:14px}
-.orn{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:48px}
+body{
+  background:#ede7d4;
+  font-family:'Noto Serif KR',serif;
+  color:#3d2510;
+  overflow-x:hidden;
+}
+
+/* ── 공통 ── */
+.eyebrow{
+  display:block;text-align:center;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px;font-weight:300;
+  letter-spacing:.3em;color:rgba(61,37,16,0.38);
+  margin-bottom:14px;
+}
+.orn{
+  display:flex;align-items:center;gap:8px;
+  justify-content:center;margin-bottom:48px;
+}
 .orn i{display:block;width:22px;height:.5px;background:rgba(61,37,16,0.2)}
 .orn s{font-size:9px;color:rgba(61,37,16,0.28);letter-spacing:.2em;text-decoration:none}
-nav{position:fixed;inset:0 0 auto;z-index:100;height:52px;background:#ede7d4;border-bottom:.5px solid rgba(61,37,16,0.14);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,48px)}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;letter-spacing:.1em;color:#3d2510;text-decoration:none}
-.nav-btn{font-family:'Noto Serif KR',serif;font-size:12px;letter-spacing:.08em;color:#3d2510;border:.5px solid rgba(61,37,16,0.36);padding:7px 18px;background:transparent;cursor:pointer;text-decoration:none;transition:all .2s}
+
+/* ── NAV ── */
+nav{
+  position:fixed;inset:0 0 auto;z-index:100;
+  height:52px;background:#ede7d4;
+  border-bottom:.5px solid rgba(61,37,16,0.14);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(20px,5vw,48px);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:400;
+  letter-spacing:.1em;color:#3d2510;text-decoration:none;
+}
+.nav-btn{
+  font-family:'Noto Serif KR',serif;
+  font-size:12px;letter-spacing:.08em;color:#3d2510;
+  border:.5px solid rgba(61,37,16,0.36);
+  padding:7px 18px;background:transparent;
+  cursor:pointer;text-decoration:none;transition:all .2s;
+}
 .nav-btn:hover{background:#3d2510;color:#ede7d4}
-#hero{min-height:100vh;padding-top:52px;display:flex;align-items:center;justify-content:center;background:#ede7d4}
-.hero-box{border:.5px solid rgba(61,37,16,0.18);padding:clamp(44px,9vw,64px) clamp(28px,8vw,56px);text-align:center;max-width:540px;width:calc(100% - 40px);position:relative}
-.hero-stamp{position:absolute;top:-28px;right:-28px;width:80px;height:80px;border-radius:50%;border:.5px solid rgba(61,37,16,0.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#ede7d4}
-.hero-stamp span{font-family:'Noto Sans KR',sans-serif;font-size:6.5px;font-weight:300;color:rgba(61,37,16,0.42);letter-spacing:.1em}
-.hero-tag{display:inline-block;border:.5px solid rgba(61,37,16,0.26);font-family:'Noto Sans KR',sans-serif;font-size:9px;font-weight:300;color:rgba(61,37,16,0.46);letter-spacing:.24em;padding:3px 14px;margin-bottom:24px}
-.hero-title{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(44px,10vw,76px);font-weight:600;letter-spacing:.04em;color:#3d2510;margin-bottom:0;line-height:1.0;white-space:nowrap;overflow:hidden;display:inline-block;border-right:2px solid rgba(61,37,16,0.7);width:0;animation:typing 1.4s steps(8,end) forwards,blink .75s step-end 6}
+
+/* ── ① HERO ── */
+#hero{
+  min-height:100vh;padding-top:52px;
+  display:flex;align-items:center;justify-content:center;
+  background:#ede7d4;
+}
+.hero-box{
+  border:.5px solid rgba(61,37,16,0.18);
+  padding:clamp(44px,9vw,64px) clamp(28px,8vw,56px);
+  text-align:center;
+  max-width:540px;width:calc(100% - 40px);
+  position:relative;
+}
+.hero-stamp{
+  position:absolute;top:-28px;right:-28px;
+  width:80px;height:80px;border-radius:50%;
+  border:.5px solid rgba(61,37,16,0.2);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;background:#ede7d4;
+}
+.hero-stamp span{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:6.5px;font-weight:300;
+  color:rgba(61,37,16,0.42);letter-spacing:.1em;
+}
+.hero-tag{
+  display:inline-block;
+  border:.5px solid rgba(61,37,16,0.26);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px;font-weight:300;
+  color:rgba(61,37,16,0.46);letter-spacing:.24em;
+  padding:3px 14px;margin-bottom:24px;
+}
+
+/* ★ 타이틀: Hahmlet 적용 */
+.hero-title{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(44px,10vw,76px);
+  font-weight:600;letter-spacing:.04em;
+  color:#3d2510;
+  margin-bottom:0;line-height:1.0;
+  white-space:nowrap;
+  overflow:hidden;
+  display:inline-block;
+  border-right:2px solid rgba(61,37,16,0.7);
+  width:0;
+  animation:typing 1.4s steps(8,end) forwards, blink .75s step-end 6;
+}
 @keyframes typing{from{width:0}to{width:100%}}
 @keyframes blink{0%,100%{border-color:rgba(61,37,16,0.7)}50%{border-color:transparent}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.hero-what{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(15px,3.5vw,18px);font-weight:400;color:rgba(61,37,16,0.72);letter-spacing:.07em;margin-bottom:12px;line-height:1.7;opacity:0;animation:fadeUp .7s ease 1.6s forwards}
-.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3.2vw,17px);font-weight:300;font-style:italic;color:rgba(61,37,16,0.5);letter-spacing:.08em;margin-bottom:32px;line-height:1.9;opacity:0;animation:fadeUp .7s ease 2.0s forwards}
-.btn-dark{display:inline-block;background:#5c3215;color:#f0e8d4;font-family:'Noto Serif KR',serif;font-size:13px;font-weight:400;letter-spacing:.12em;padding:14px 38px;border:none;cursor:pointer;text-decoration:none;transition:opacity .2s;opacity:0;animation:fadeUp .7s ease 2.4s forwards}
+.hero-what{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(15px,3.5vw,18px);font-weight:400;
+  color:rgba(61,37,16,0.72);letter-spacing:.07em;
+  margin-bottom:12px;line-height:1.7;
+  opacity:0;animation:fadeUp .7s ease 1.6s forwards;
+}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,3.2vw,17px);font-weight:300;font-style:italic;
+  color:rgba(61,37,16,0.5);letter-spacing:.08em;
+  margin-bottom:32px;line-height:1.9;
+  opacity:0;animation:fadeUp .7s ease 2.0s forwards;
+}
+.btn-dark{
+  display:inline-block;
+  background:#5c3215;color:#f0e8d4;
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:400;letter-spacing:.12em;
+  padding:14px 38px;border:none;cursor:pointer;
+  text-decoration:none;transition:opacity .2s;
+  opacity:0;animation:fadeUp .7s ease 2.4s forwards;
+}
 .btn-dark:hover{opacity:.86!important}
-#memory{background:#e6dfcb;padding:clamp(80px,13vw,108px) clamp(24px,6vw,60px);text-align:center;position:relative;overflow:hidden}
-#memory::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 42%,rgba(61,37,16,0.04) 0%,transparent 70%);pointer-events:none}
-.mem-headline{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(22px,5.5vw,32px);font-weight:400;letter-spacing:.06em;line-height:1.75;margin-bottom:10px;color:#3d2510}
-.mem-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3.2vw,17px);font-weight:300;font-style:italic;color:rgba(61,37,16,0.46);letter-spacing:.08em;margin-bottom:56px}
-.frames{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,3vw,20px);margin-bottom:48px}
-.fcol{display:flex;flex-direction:column;align-items:center;gap:9px;opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
+
+/* ── ② MEMORY ── */
+#memory{
+  background:#e6dfcb;
+  padding:clamp(80px,13vw,108px) clamp(24px,6vw,60px);
+  text-align:center;position:relative;overflow:hidden;
+}
+#memory::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 42%,rgba(61,37,16,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.mem-headline{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(22px,5.5vw,32px);
+  font-weight:400;letter-spacing:.06em;line-height:1.75;
+  margin-bottom:10px;color:#3d2510;
+}
+.mem-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,3.2vw,17px);font-weight:300;font-style:italic;
+  color:rgba(61,37,16,0.46);letter-spacing:.08em;
+  margin-bottom:56px;
+}
+.frames{
+  display:flex;align-items:flex-end;
+  justify-content:center;gap:clamp(10px,3vw,20px);
+  margin-bottom:48px;
+}
+.fcol{
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  opacity:0;transform:translateY(16px);
+  transition:opacity .65s ease,transform .65s ease;
+}
 .fcol.on{opacity:1;transform:translateY(0)}
-.fbox{position:relative;overflow:hidden;background:rgba(61,37,16,0.09);border:.5px solid rgba(61,37,16,0.2)}
-.fbox::before{content:'';position:absolute;left:50%;top:18%;width:.5px;height:28%;background:rgba(61,37,16,0.13);transform:translateX(-50%)}
-.fbox::after{content:'';position:absolute;left:14%;right:14%;top:56%;height:.5px;background:rgba(61,37,16,0.1)}
+.fbox{
+  position:relative;overflow:hidden;
+  background:rgba(61,37,16,0.09);
+  border:.5px solid rgba(61,37,16,0.2);
+}
+.fbox::before{
+  content:'';position:absolute;
+  left:50%;top:18%;width:.5px;height:28%;
+  background:rgba(61,37,16,0.13);
+  transform:translateX(-50%);
+}
+.fbox::after{
+  content:'';position:absolute;
+  left:14%;right:14%;top:56%;height:.5px;
+  background:rgba(61,37,16,0.1);
+}
 .f0{width:clamp(64px,15vw,90px);height:clamp(80px,19vw,112px)}
 .f1{width:clamp(56px,13vw,78px);height:clamp(70px,17vw,98px);filter:blur(1.2px);opacity:.72}
 .f2{width:clamp(46px,11vw,64px);height:clamp(58px,14vw,80px);filter:blur(4px);opacity:.42}
 .f3{width:clamp(36px,8.5vw,50px);height:clamp(46px,11vw,62px);filter:blur(9px);opacity:.18}
-.fyear{font-family:'Noto Sans KR',sans-serif;font-size:9px;font-weight:300;color:rgba(61,37,16,0.38);letter-spacing:.13em}
+.fyear{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px;font-weight:300;
+  color:rgba(61,37,16,0.38);letter-spacing:.13em;
+}
 .mem-divider{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px}
 .mem-divider i{display:block;width:20px;height:.5px;background:rgba(61,37,16,0.18)}
 .mem-divider s{text-decoration:none;width:3px;height:3px;border-radius:50%;background:rgba(61,37,16,0.22)}
-.mem-copy{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:300;font-style:italic;color:rgba(61,37,16,0.48);letter-spacing:.07em;line-height:1.95;margin-bottom:36px}
-.sdwn{display:inline-flex;flex-direction:column;align-items:center;gap:4px;opacity:.28;animation:bob 2.4s ease-in-out infinite}
-.sdwn span{font-family:'Noto Sans KR',sans-serif;font-size:8px;font-weight:300;color:rgba(61,37,16,0.7);letter-spacing:.22em}
+.mem-copy{
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:300;font-style:italic;
+  color:rgba(61,37,16,0.48);letter-spacing:.07em;
+  line-height:1.95;margin-bottom:36px;
+}
+.sdwn{
+  display:inline-flex;flex-direction:column;align-items:center;gap:4px;
+  opacity:.28;animation:bob 2.4s ease-in-out infinite;
+}
+.sdwn span{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:8px;font-weight:300;
+  color:rgba(61,37,16,0.7);letter-spacing:.22em;
+}
 .sdwn i{display:block;width:.5px;height:20px;background:rgba(61,37,16,0.45)}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-#how{background:#ede7d4;padding:clamp(80px,13vw,108px) clamp(24px,6vw,60px);text-align:center}
-.sec-title{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(24px,6vw,34px);font-weight:400;letter-spacing:.07em;text-align:center;margin-bottom:14px}
-.how-grid{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;max-width:760px;margin:0 auto}
-.how-card{flex:1;min-width:160px;max-width:220px;border:.5px dashed rgba(61,37,16,0.2);padding:32px 20px;text-align:center}
-.how-num{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:32px;font-weight:300;color:rgba(61,37,16,0.1);letter-spacing:.04em;margin-bottom:14px}
+
+/* ── ③ HOW IT WORKS ── */
+#how{
+  background:#ede7d4;
+  padding:clamp(80px,13vw,108px) clamp(24px,6vw,60px);
+  text-align:center;
+}
+.sec-title{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(24px,6vw,34px);
+  font-weight:400;letter-spacing:.07em;
+  text-align:center;margin-bottom:14px;
+}
+.how-grid{
+  display:flex;align-items:flex-start;
+  justify-content:center;flex-wrap:wrap;
+  max-width:760px;margin:0 auto;
+}
+.how-card{
+  flex:1;min-width:160px;max-width:220px;
+  border:.5px dashed rgba(61,37,16,0.2);
+  padding:32px 20px;text-align:center;
+}
+@media(max-width:540px){
+  .how-grid{flex-direction:column;align-items:center;gap:0}
+  .how-card{width:100%;max-width:100%;min-width:unset;border-left:none;border-right:none}
+  .how-arr{display:none}
+}
+.how-num{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:32px;font-weight:300;
+  color:rgba(61,37,16,0.1);letter-spacing:.04em;margin-bottom:14px;
+}
 .how-icon{font-size:26px;margin-bottom:16px;display:block}
-.how-name{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:14px;font-weight:400;letter-spacing:.06em;margin-bottom:12px}
-.how-desc{font-family:'Noto Serif KR',serif;font-size:12px;font-weight:300;color:rgba(61,37,16,0.5);line-height:1.95;letter-spacing:.03em}
+.how-name{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:14px;font-weight:400;letter-spacing:.06em;margin-bottom:12px;
+}
+.how-desc{
+  font-family:'Noto Serif KR',serif;
+  font-size:12px;font-weight:300;
+  color:rgba(61,37,16,0.5);line-height:1.95;letter-spacing:.03em;
+}
 .how-arr{font-size:14px;color:rgba(61,37,16,0.18);align-self:center;padding:0 4px 36px}
-@media(max-width:540px){.how-arr{display:none}.how-card{min-width:140px}}
-#quote{background:#5c3215;padding:clamp(72px,12vw,96px) clamp(28px,8vw,80px);text-align:center;position:relative;overflow:hidden}
-#quote::before{content:'\201C';position:absolute;top:12px;left:24px;font-family:'Cormorant Garamond',serif;font-size:90px;font-weight:700;color:rgba(235,210,165,0.07);line-height:1}
-.quote-text{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(18px,4.5vw,26px);font-weight:300;color:rgba(235,210,165,0.88);letter-spacing:.06em;line-height:1.88;position:relative;z-index:1;max-width:500px;margin:0 auto}
-#reviews{background:#e6dfcb;padding:clamp(72px,12vw,96px) clamp(24px,6vw,60px);text-align:center}
-.reviews-grid{display:flex;flex-direction:column;gap:14px;max-width:500px;margin:0 auto}
-.review-card{background:rgba(61,37,16,0.05);border:.5px solid rgba(61,37,16,0.14);padding:22px 24px;text-align:left}
-.review-text{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:300;font-style:italic;color:rgba(61,37,16,0.72);line-height:1.9;letter-spacing:.04em;margin-bottom:14px}
+
+
+/* ── ④ QUOTE ── */
+#quote{
+  background:#5c3215;
+  padding:clamp(72px,12vw,96px) clamp(28px,8vw,80px);
+  text-align:center;position:relative;overflow:hidden;
+}
+#quote::before{
+  content:'\201C';position:absolute;top:12px;left:24px;
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:90px;font-weight:700;
+  color:rgba(235,210,165,0.07);line-height:1;
+}
+.quote-text{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(18px,4.5vw,26px);
+  font-weight:300;
+  color:rgba(235,210,165,0.88);
+  letter-spacing:.06em;line-height:1.88;
+  position:relative;z-index:1;
+  max-width:500px;margin:0 auto;
+}
+
+/* ── ⑤ REVIEWS ── */
+#reviews{
+  background:#e6dfcb;
+  padding:clamp(72px,12vw,96px) clamp(24px,6vw,60px);
+  text-align:center;
+}
+.reviews-grid{
+  display:flex;flex-direction:column;
+  gap:14px;max-width:500px;margin:0 auto;
+}
+.review-card{
+  background:rgba(61,37,16,0.05);
+  border:.5px solid rgba(61,37,16,0.14);
+  padding:22px 24px;text-align:left;
+}
+.review-text{
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:300;font-style:italic;
+  color:rgba(61,37,16,0.72);line-height:1.9;
+  letter-spacing:.04em;margin-bottom:14px;
+}
 .review-text::before{content:'\201C';margin-right:2px}
 .review-text::after{content:'\201D';margin-left:2px}
 .review-meta{display:flex;align-items:center;gap:10px}
 .review-dot{width:5px;height:5px;border-radius:50%;background:rgba(61,37,16,0.22);flex-shrink:0}
-.review-who{font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:300;color:rgba(61,37,16,0.42);letter-spacing:.12em}
-#pricing{background:#ede7d4;padding:clamp(72px,12vw,96px) clamp(24px,6vw,60px);text-align:center}
-.price-anchor{font-family:'Noto Serif KR',serif;font-size:13px;font-weight:300;font-style:italic;color:rgba(61,37,16,0.52);letter-spacing:.06em;margin-bottom:36px;line-height:1.85}
-.price-anchor strong{font-weight:400;font-style:normal;color:rgba(61,37,16,0.78)}
-.price-wrap{border:.5px dashed rgba(61,37,16,0.2);max-width:480px;margin:0 auto;background:#faf6ee}
-.price-inner{padding:clamp(36px,6vw,52px) clamp(28px,5vw,44px) clamp(40px,7vw,52px)}
-.price-badge{display:inline-block;background:#5c3215;color:#f0e8d4;font-family:'Noto Sans KR',sans-serif;font-size:9px;font-weight:300;letter-spacing:.2em;padding:4px 14px;margin-bottom:20px}
-.price-name{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:18px;font-weight:400;letter-spacing:.07em;margin-bottom:20px}
-.price-num{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:clamp(32px,8vw,42px);font-weight:600;letter-spacing:.02em;margin-bottom:7px}
-.price-note{font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:300;color:rgba(61,37,16,0.4);letter-spacing:.12em;margin-bottom:30px}
+.review-who{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px;font-weight:300;
+  color:rgba(61,37,16,0.42);letter-spacing:.12em;
+}
+
+/* ── ⑥ PRICING ── */
+#pricing{
+  background:#ede7d4;
+  padding:clamp(72px,12vw,96px) clamp(24px,6vw,60px);
+  text-align:center;
+}
+.price-anchor{
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:300;font-style:italic;
+  color:rgba(61,37,16,0.52);letter-spacing:.06em;
+  margin-bottom:36px;line-height:1.85;
+}
+.price-anchor strong{
+  font-weight:400;font-style:normal;color:rgba(61,37,16,0.78);
+}
+.price-wrap{
+  border:.5px dashed rgba(61,37,16,0.2);
+  max-width:480px;margin:0 auto;background:#faf6ee;
+}
+.price-inner{
+  padding:clamp(36px,6vw,52px) clamp(28px,5vw,44px) clamp(40px,7vw,52px);
+}
+.price-badge{
+  display:inline-block;
+  background:#5c3215;color:#f0e8d4;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px;font-weight:300;letter-spacing:.2em;
+  padding:4px 14px;margin-bottom:20px;
+}
+.price-name{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:18px;font-weight:400;letter-spacing:.07em;margin-bottom:20px;
+}
+.price-num{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:clamp(32px,8vw,42px);font-weight:600;
+  letter-spacing:.02em;margin-bottom:7px;
+}
+.price-note{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px;font-weight:300;
+  color:rgba(61,37,16,0.4);letter-spacing:.12em;margin-bottom:30px;
+}
 .price-list{list-style:none;text-align:left;margin-bottom:34px}
-.price-list li{display:flex;align-items:flex-start;gap:13px;padding:11px 0;border-bottom:.5px solid rgba(61,37,16,0.09);font-family:'Noto Serif KR',serif;font-size:13px;font-weight:300;color:#3d2510;letter-spacing:.03em;line-height:1.6}
+.price-list li{
+  display:flex;align-items:flex-start;gap:13px;
+  padding:11px 0;border-bottom:.5px solid rgba(61,37,16,0.09);
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:300;color:#3d2510;
+  letter-spacing:.03em;line-height:1.6;
+}
 .price-list li:last-child{border-bottom:none}
 .pchk{font-size:10px;color:rgba(61,37,16,0.42);margin-top:2px;flex-shrink:0}
 .cta-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
-.btn-cta{display:inline-block;width:100%;text-align:center;background:#5c3215;color:#f0e8d4;font-family:'Noto Serif KR',serif;font-size:13px;font-weight:400;letter-spacing:.14em;padding:15px 40px;border:none;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.btn-cta{
+  display:inline-block;width:100%;text-align:center;
+  background:#5c3215;color:#f0e8d4;
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;font-weight:400;letter-spacing:.14em;
+  padding:15px 40px;border:none;cursor:pointer;
+  text-decoration:none;transition:opacity .2s;
+}
 .btn-cta:hover{opacity:.86}
-.cta-sub{font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:300;color:rgba(61,37,16,0.36);letter-spacing:.1em}
-footer{background:#e6dfcb;border-top:.5px solid rgba(61,37,16,0.1);padding:36px 28px;text-align:center}
+.cta-sub{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px;font-weight:300;
+  color:rgba(61,37,16,0.36);letter-spacing:.1em;
+}
+
+/* ── FOOTER ── */
+footer{
+  background:#e6dfcb;
+  border-top:.5px solid rgba(61,37,16,0.1);
+  padding:36px 28px;text-align:center;
+}
 footer p{margin-bottom:6px}
-.f-logo{font-family:'Cormorant Garamond','Noto Serif KR',serif;font-size:15px;font-weight:400;letter-spacing:.09em}
-.f-line{font-family:'Noto Serif KR',serif;font-size:11px;font-weight:300;color:rgba(61,37,16,0.46);letter-spacing:.06em}
-.f-small{font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:300;color:rgba(61,37,16,0.32);letter-spacing:.04em;line-height:1.75;margin:10px 0}
+.f-logo{
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:15px;font-weight:400;letter-spacing:.09em;
+}
+.f-line{
+  font-family:'Noto Serif KR',serif;
+  font-size:11px;font-weight:300;
+  color:rgba(61,37,16,0.46);letter-spacing:.06em;
+}
+.f-small{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px;font-weight:300;
+  color:rgba(61,37,16,0.32);letter-spacing:.04em;
+  line-height:1.75;margin:10px 0;
+}
 .f-dots{font-size:10px;color:rgba(61,37,16,0.2);letter-spacing:.2em;margin:10px 0}
-.f-mail{font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:300;color:rgba(61,37,16,0.4);letter-spacing:.06em}
-.reveal{opacity:0;transform:translateY(32px);transition:opacity .85s cubic-bezier(.22,.61,.36,1),transform .85s cubic-bezier(.22,.61,.36,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
+.f-mail{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:11px;font-weight:300;
+  color:rgba(61,37,16,0.4);letter-spacing:.06em;
+}
+
+/* ── 스크롤 리빌 ── */
+.reveal{
+  opacity:0;
+  transform:translateY(32px);
+  transition:opacity .85s cubic-bezier(.22,.61,.36,1), transform .85s cubic-bezier(.22,.61,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
 .reveal-delay-1{transition-delay:.12s}
 .reveal-delay-2{transition-delay:.24s}
 .reveal-delay-3{transition-delay:.36s}
@@ -108,27 +421,39 @@ footer p{margin-bottom:6px}
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="#hero" class="nav-logo">그때, 우리는</a>
   <a href="https://hepick01.github.io/geuttae/order.html" class="nav-btn">주문하기</a>
 </nav>
 
+<!-- ① HERO -->
 <section id="hero">
   <div class="hero-box">
-    <div class="hero-stamp"><span>TIME</span><span>CAPSULE</span><span>SERVICE</span></div>
+    <div class="hero-stamp">
+      <span>TIME</span><span>CAPSULE</span><span>SERVICE</span>
+    </div>
     <div class="hero-tag">TIME CAPSULE</div>
     <div style="display:block;text-align:center;margin-bottom:16px">
       <h1 class="hero-title">그때, 우리는</h1>
     </div>
-    <p class="hero-what">사진, 편지, 노래를 담아<br>미래의 나에게 배송하는 타임캡슐</p>
-    <p class="hero-sub">지금 이 순간을, 미래의 우리에게.<br>약속한 그날, 문 앞에 도착합니다.</p>
+    <p class="hero-what">
+      사진, 편지, 노래를 담아<br>미래의 나에게 배송하는 타임캡슐
+    </p>
+    <p class="hero-sub">
+      지금 이 순간을, 미래의 우리에게.<br>
+      약속한 그날, 문 앞에 도착합니다.
+    </p>
     <a href="https://hepick01.github.io/geuttae/order.html" class="btn-dark">타임캡슐 만들기</a>
   </div>
 </section>
 
+<!-- ② MEMORY -->
 <section id="memory">
   <span class="eyebrow reveal">기억에 관하여</span>
-  <h2 class="mem-headline reveal reveal-delay-1">오늘의 기억,<br>10년이 지나면 얼마나 남아있을까요?</h2>
+  <h2 class="mem-headline reveal reveal-delay-1">
+    오늘의 기억,<br>10년이 지나면 얼마나 남아있을까요?
+  </h2>
   <p class="mem-sub reveal reveal-delay-2">사진은 남지만, 그날의 감정은 서서히 사라집니다.</p>
   <div class="frames" id="frames">
     <div class="fcol" data-d="0"><div class="fbox f0"></div><span class="fyear">지금</span></div>
@@ -137,10 +462,14 @@ footer p{margin-bottom:6px}
     <div class="fcol" data-d="420"><div class="fbox f3"></div><span class="fyear">10년 후</span></div>
   </div>
   <div class="mem-divider"><i></i><s></s><i></i></div>
-  <p class="mem-copy">지금 이 순간을 선명하게 남겨두세요.<br>그때의 우리가, 지금의 우리에게.</p>
+  <p class="mem-copy">
+    지금 이 순간을 선명하게 남겨두세요.<br>
+    그때의 우리가, 지금의 우리에게.
+  </p>
   <div class="sdwn"><span>SCROLL</span><i></i></div>
 </section>
 
+<!-- ③ HOW IT WORKS -->
 <section id="how">
   <span class="eyebrow reveal">HOW IT WORKS</span>
   <h2 class="sec-title reveal reveal-delay-1">이렇게 전해져요</h2>
@@ -169,34 +498,48 @@ footer p{margin-bottom:6px}
   </div>
 </section>
 
+<!-- ④ QUOTE -->
 <section id="quote">
-  <p class="quote-text reveal">"지금 이 순간도,<br>언젠가는 그리운 그때가 됩니다."</p>
+  <p class="quote-text reveal">
+    "지금 이 순간도,<br>언젠가는 그리운 그때가 됩니다."
+  </p>
 </section>
 
+<!-- ⑤ REVIEWS -->
 <section id="reviews">
   <span class="eyebrow reveal">REVIEWS</span>
   <h2 class="sec-title reveal reveal-delay-1">받아본 분들의 이야기</h2>
-  <div class="orn reveal reveal-delay-2"><i></i><s>✦</s><i></i><s>✦</s><i></i></div>
+  <div class="orn"><i></i><s>✦</s><i></i><s>✦</s><i></i></div>
   <div class="reviews-grid">
-    <div class="review-card reveal reveal-delay-1">
+    <div class="review-card reveal">
       <p class="review-text">박스를 여는 순간, 그날의 향기가 났어요. 편지를 읽으면서 눈물이 났는데, 그때 그 사람이 얼마나 나를 생각했는지가 느껴졌어요.</p>
-      <div class="review-meta"><div class="review-dot"></div><span class="review-who">20대 여성 · 연인에게 선물</span></div>
+      <div class="review-meta">
+        <div class="review-dot"></div>
+        <span class="review-who">20대 여성 · 연인에게 선물</span>
+      </div>
     </div>
-    <div class="review-card reveal reveal-delay-2">
+    <div class="review-card reveal">
       <p class="review-text">5년 후에 받기로 했는데, 막상 만들면서 내가 더 울었어요. 지금 이 감정을 기록한다는 게 이렇게 소중한 일인 줄 몰랐어요.</p>
-      <div class="review-meta"><div class="review-dot"></div><span class="review-who">30대 남성 · 스스로에게 선물</span></div>
+      <div class="review-meta">
+        <div class="review-dot"></div>
+        <span class="review-who">30대 남성 · 스스로에게 선물</span>
+      </div>
     </div>
-    <div class="review-card reveal reveal-delay-3">
+    <div class="review-card reveal">
       <p class="review-text">크라프트 상자를 열었을 때 드라이플라워 향이 퍼졌고, 그 안에 담긴 사진들을 보면서 한동안 말을 잇지 못했어요. 정말 소중한 선물이에요.</p>
-      <div class="review-meta"><div class="review-dot"></div><span class="review-who">20대 여성 · 친구에게 선물</span></div>
+      <div class="review-meta">
+        <div class="review-dot"></div>
+        <span class="review-who">20대 여성 · 친구에게 선물</span>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ⑥ PRICING -->
 <section id="pricing">
   <span class="eyebrow reveal">PRICING</span>
   <h2 class="sec-title reveal reveal-delay-1">가격 안내</h2>
-  <div class="orn reveal reveal-delay-2"><i></i><s>✦</s><i></i><s>✦</s><i></i></div>
+  <div class="orn"><i></i><s>✦</s><i></i><s>✦</s><i></i></div>
   <p class="price-anchor reveal reveal-delay-2">
     하루 커피 한 잔 값으로,<br>
     <strong>10년 후 당신이 받을 가장 소중한 선물</strong>을 만들 수 있어요.
@@ -224,6 +567,7 @@ footer p{margin-bottom:6px}
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <p class="f-logo">그때, 우리는</p>
   <p class="f-line">그때의 기억을, 오래도록 간직해요.</p>
@@ -233,6 +577,7 @@ footer p{margin-bottom:6px}
 </footer>
 
 <script>
+// ── 사진 프레임 등장 ──
 const fcols = document.querySelectorAll('.fcol');
 const memObs = new IntersectionObserver(entries => {
   if(entries[0].isIntersecting){
@@ -242,6 +587,7 @@ const memObs = new IntersectionObserver(entries => {
 },{threshold:0.2});
 memObs.observe(document.getElementById('memory'));
 
+// ── 스크롤 리빌 ──
 const reveals = document.querySelectorAll('.reveal');
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(entry => {
